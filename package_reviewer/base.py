@@ -1,6 +1,8 @@
 import abc
 from collections import namedtuple
+import logging
 
+l = logging.getLogger(__name__)
 
 CFailure = namedtuple("CFailure", "message details exc_info")
 # `Warning` is a built-in
@@ -16,11 +18,13 @@ class Checker(metaclass=abc.ABCMeta):
         self._checked = False
 
     def fail(self, message, details=None, exc_info=None):
+        # TODO capture calling frame
         failure = CFailure(message, details, exc_info)
         self.failures.add(failure)
 
     def warn(self, message):
         # Warnings don't cause checks to fail
+        # TODO capture calling frame
         warning = CWarning(message)
         self.warnings.add(warning)
 
@@ -28,27 +32,29 @@ class Checker(metaclass=abc.ABCMeta):
         try:
             self.check()
         except Exception as e:
-            self.fail("Unhandled exception in 'check' routine", exc_info=e)
+            msg = "Unhandled exception in 'check' routine"
+            self.fail(msg, exc_info=e)
+            l.exception(msg)
         self._checked = True
 
     def result(self):
+        """Return whether checks ran without issues (`True`) or there were failures (`False`)."""
         if not self._checked:
             raise RuntimeError("Check has not been perfomed yet")
-        return bool(self.failures)
+        return not bool(self.failures)
 
-    def report(self):
+    def _report(self):
+        # This is a very basic report procedure and only for debugging
         if not self._checked:
             raise RuntimeError("Check has not been perfomed yet")
 
-        # TODO report
         import pprint
         if self.warnings:
             pprint.pprint(self.warnings)
         if self.failures:
             pprint.pprint(self.failures)
-            return False
-        else:
-            return True
+
+        return self.result()
 
     @abc.abstractmethod
     def check(self):
@@ -75,7 +81,13 @@ class CheckRunner:
 
         self._checked = True
 
+    def result(self):
+        if not self._checked:
+            raise RuntimeError("Check has not been perfomed yet")
+        return bool(self.failures)
+
     def report(self):
+        # TODO refine output
         if not self._checked:
             raise RuntimeError("Check has not been perfomed yet")
 
@@ -97,4 +109,3 @@ class CheckRunner:
             print(warning)
 
         return bool(self.failures)
-
