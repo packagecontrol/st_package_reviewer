@@ -1,3 +1,9 @@
+"""Parse JSON with C-style comments (and trailing commas).
+
+Due to (multi-line) comments being stripped,
+reported json.DecodeErrors may report "wrong" line and column numbers.
+"""
+
 import json
 import re
 
@@ -25,13 +31,13 @@ def _strip_js_comments(string):
 
     Considers those encapsulated by strings.
 
-    Oriignal Source:
+    Original Source:
     http://stackoverflow.com/questions/2136363/matching-one-line-javascript-comments-with-re
     """
     parts = _re_js_comments.findall(string)
     # Stripping the whitespaces is, of course, optional, but the columns are fucked up anyway
     # with the comments being removed and it doesn't break things.
-    return ''.join([x[0].strip(' ') for x in parts])
+    return ''.join(x[0].strip(' ') for x in parts)
 
 
 def _strip_trailing_json_commas(string):
