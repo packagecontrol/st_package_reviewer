@@ -14,12 +14,9 @@ class CheckResourceFiles(Checker):
         return list(self.base_path.glob(pattern))
 
     def check(self):
-        i = 0
         for name in dir(self):
             if name.startswith("check_"):
                 getattr(self, name)()
-                i += 1
-        assert i == 3, i
         l.debug("CheckResourceFiles.glob cache info: %s", self.glob.cache_info())
 
     def check_plugins_in_root(self):
