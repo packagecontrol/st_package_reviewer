@@ -1,0 +1,5 @@
+tox
+pytest
+flake8
+coverage
+pip-tools
