@@ -85,6 +85,7 @@ class CheckRunner:
         self._checked = False
 
     def run(self, *args, **kwargs):
+        l.debug("Running checkers...\n")
         objs = []
         for checker in self.checkers:
             checker_obj = checker(*args, **kwargs)
@@ -93,6 +94,9 @@ class CheckRunner:
             checker_obj.perform_check()
             self.failures |= checker_obj.failures
             self.warnings |= checker_obj.warnings
+            l.debug("Checker '%s' result: %s",
+                    checker_obj.__class__.__name__,
+                    checker_obj.result())
 
         self._checked = True
 

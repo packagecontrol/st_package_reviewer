@@ -17,7 +17,7 @@ def _find_all_checkers(parent_class):
     this_file = Path(__file__)
     all_checkers = set()
 
-    l.info("Collecting 'checkers' sub-modules...")
+    l.debug("Collecting 'checkers' sub-modules...")
     for checker_file in this_file.parent.glob("*.py"):
         if checker_file == this_file:
             continue
@@ -34,7 +34,7 @@ def _find_all_checkers(parent_class):
                 l.debug("Found %s subclass: %r", parent_class.__class__.__name__, thing)
                 all_checkers.add(thing)
 
-    l.info("Loaded %d checkers", len(all_checkers))
+    l.debug("Loaded %d checkers", len(all_checkers))
 
     return all_checkers
 
