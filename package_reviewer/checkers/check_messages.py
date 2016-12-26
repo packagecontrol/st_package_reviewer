@@ -32,9 +32,10 @@ class CheckMessages(Checker):
             elif SemVer.valid(key):
                 pass
             else:
-                self.fail("Key {!r} is not 'install' or a valid semantic version".format(key))
+                self.fail("messages.json: Key {!r} is not 'install' or a valid semantic version"
+                          .format(key))
 
             messsage_path = Path(self.base_path, rel_path)
             if not messsage_path.is_file():
-                self.fail("File {!r}, as specified by key {!r}, does not exist"
-                          .format(messsage_path, key))
+                self.fail("messages.json: File {!r}, as specified by key {!r}, does not exist"
+                          .format(rel_path, key))
