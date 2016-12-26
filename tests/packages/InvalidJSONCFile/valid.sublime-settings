@@ -1,0 +1,7 @@
+{
+    /*
+     * multi-line comments are allowed
+     */
+    "just_a_key": "just_a_value" // as are line comments
+    , // and trailing commas
+}
