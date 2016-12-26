@@ -3,16 +3,15 @@ import logging
 import plistlib
 import xml.etree.ElementTree as ET
 
-from ..base import MultiCheckerMixin
 from ..file import FileChecker
 from .. import jsonc
 
 l = logging.getLogger(__name__)
 
 
-class CheckResourceFiles(MultiCheckerMixin, FileChecker):
+class CheckPluginsInRoot(FileChecker):
 
-    def check_plugins_in_root(self):
+    def check(self):
         if self.glob("*.py"):
             return
 
@@ -25,7 +24,10 @@ class CheckResourceFiles(MultiCheckerMixin, FileChecker):
                           "and no build system is specified"
                           .format(len(python_files_in_package)))
 
-    def check_has_resource_files(self):
+
+class CheckHasResourceFiles(FileChecker):
+
+    def check(self):
         resource_file_globs = {
             "*.py",
             "**/*.sublime-build",
@@ -51,7 +53,10 @@ class CheckResourceFiles(MultiCheckerMixin, FileChecker):
         if not has_resource_files:
             self.fail("The package does not define any file that interfaces with Sublime Text")
 
-    def check_jsonc_files(self):
+
+class CheckJSONCFiles(FileChecker):
+
+    def check(self):
         # All these files allow comments and trailing commas,
         # which is why we'll call them "jsonc" (JSON with Comments)
         jsonc_file_globs = {
@@ -71,10 +76,13 @@ class CheckResourceFiles(MultiCheckerMixin, FileChecker):
                     jsonc.loads(f.read())
                 except json.JSONDecodeError as e:
                     self.fail("File '{}' is badly formatted JSON (with comments)"
-                              .format(self._rel_path(file_path)),
+                              .format(self.rel_path(file_path)),
                               exception=e)
 
-    def check_plist_files(self):
+
+class CheckPlistFiles(FileChecker):
+
+    def check(self):
         plist_file_globs = {
             "**/*.tmLanguage",
             "**/*.tmPreferences",
@@ -88,17 +96,17 @@ class CheckResourceFiles(MultiCheckerMixin, FileChecker):
                     plistlib.load(f)
                 except ValueError as e:
                     self.fail("File '{}' is a badly formatted Plist"
-                              .format(self._rel_path(file_path)),
+                              .format(self.rel_path(file_path)),
                               exception=e)
 
-    def check_xml_files(self):
+
+class CheckXmlFiles(FileChecker):
+
+    def check(self):
         for file_path in self.glob("**/*.sublime-snippet"):
             try:
                 ET.parse(str(file_path))
             except ET.ParseError as e:
                 self.fail("File '{}' is badly formatted XML"
-                          .format(self._rel_path(file_path)),
+                          .format(self.rel_path(file_path)),
                           exception=e)
-
-    def _rel_path(self, path):
-        return path.relative_to(self.base_path)

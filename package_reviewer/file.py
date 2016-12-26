@@ -6,19 +6,29 @@ from .base import Checker
 
 
 class FileChecker(Checker):
-    """Adds utilities for file systems to the Checker class."""
+    """Groups checks for packages' contents.
+
+    Also adds utilities for file systems to the Checker class.
+    """
 
     def __init__(self, base_path):
         super().__init__()
         self.base_path = base_path
 
-    # Cache results of glob calls
+    @staticmethod
+    # Cache results of glob calls (this is naive, but realistic)
     @functools.lru_cache()
+    def _glob(base_path, pattern):
+        return list(base_path.glob(pattern))
+
     def glob(self, pattern):
-        return list(self.base_path.glob(pattern))
+        return self._glob(self.base_path, pattern)
 
     def globs(self, *patterns):
         return itertools.chain(*(self.glob(ptrn) for ptrn in patterns))
 
     def sub_path(self, rel_path):
         return Path(self.base_path, rel_path)
+
+    def rel_path(self, path):
+        return path.relative_to(self.base_path)
