@@ -101,9 +101,10 @@ class CheckRunner:
         self._checked = True
 
     def result(self):
+        """Return whether checks ran without issues (`True`) or there were failures (`False`)."""
         if not self._checked:
             raise RuntimeError("Check has not been perfomed yet")
-        return bool(self.failures)
+        return not bool(self.failures)
 
     def report(self):
         # TODO refine output
@@ -129,4 +130,4 @@ class CheckRunner:
         for warning in self.warnings:
             print(warning)
 
-        return bool(self.failures)
+        return not bool(self.failures)

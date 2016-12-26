@@ -1,6 +1,7 @@
 import argparse
 import logging
 from pathlib import Path
+import sys
 
 from .base import CheckRunner
 from .checkers import get_file_checkers
@@ -23,8 +24,8 @@ def main():
     checkers = get_file_checkers()
     runner = CheckRunner(checkers)
     runner.run(args.path)
-    runner.report()
+    return not runner.report()
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
