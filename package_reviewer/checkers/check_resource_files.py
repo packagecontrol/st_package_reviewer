@@ -98,10 +98,10 @@ class CheckResourceFiles(Checker):
         }
 
         for file_path in self.globs(*plist_file_globs):
-            with file_path.open() as f:
+            with file_path.open('rb') as f:
                 try:
                     plistlib.load(f)
-                except Exception as e:
+                except ValueError as e:
                     self.fail("File '{}' is a badly formatted Plist"
                               .format(self._rel_path(file_path)),
                               exception=e)
