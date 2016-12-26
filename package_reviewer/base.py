@@ -13,8 +13,7 @@ CWarning = namedtuple("CWarning", "message")
 
 class Checker(metaclass=abc.ABCMeta):
 
-    def __init__(self, base_path):
-        self.base_path = base_path
+    def __init__(self):
         self.failures = set()
         self.warnings = set()
         self._checked = False
@@ -61,6 +60,20 @@ class Checker(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def check(self):
         pass
+
+
+class MultiCheckerMixin:
+
+    """Use this mixin class when you want to implement multiple "seaprate" checks."""
+
+    def check(self):
+        count = 0
+        for name in dir(self):
+            if name.startswith("check_"):
+                count += 1
+                getattr(self, name)()
+        if not count:
+            raise NotImplementedError("Must implement at least one method starting with `check_`")
 
 
 class CheckRunner:

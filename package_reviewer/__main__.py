@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 from .base import CheckRunner
-from .checkers import find_all_checkers
+from .checkers import get_file_checkers
 
 
 def main():
@@ -20,7 +20,7 @@ def main():
     logger.setLevel(log_level)
 
     # do stuff
-    checkers = find_all_checkers()
+    checkers = get_file_checkers()
     runner = CheckRunner(checkers)
     runner.run(args.path)
     runner.report()

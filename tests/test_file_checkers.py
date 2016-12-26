@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from package_reviewer.base import CheckRunner
-from package_reviewer.checkers import find_all_checkers
+from package_reviewer.checkers import get_file_checkers
 
 
 def _collect_test_packages():
@@ -25,7 +25,7 @@ def package_path(request):
 
 @pytest.fixture(scope='function')
 def check_runner():
-    return CheckRunner(find_all_checkers())
+    return CheckRunner(get_file_checkers())
 
 
 def config_logging():

@@ -1,31 +1,16 @@
-import functools
-import itertools
 import json
 import logging
 import plistlib
 import xml.etree.ElementTree as ET
 
-from ..base import Checker
+from ..base import MultiCheckerMixin
+from ..file import FileChecker
 from .. import jsonc
 
 l = logging.getLogger(__name__)
 
 
-class CheckResourceFiles(Checker):
-
-    # Cache results of glob calls
-    @functools.lru_cache()
-    def glob(self, pattern):
-        return list(self.base_path.glob(pattern))
-
-    def globs(self, *patterns):
-        return itertools.chain(*(self.glob(ptrn) for ptrn in patterns))
-
-    def check(self):
-        for name in dir(self):
-            if name.startswith("check_"):
-                getattr(self, name)()
-        l.debug("CheckResourceFiles.glob cache info: %s", self.glob.cache_info())
+class CheckResourceFiles(MultiCheckerMixin, FileChecker):
 
     def check_plugins_in_root(self):
         if self.glob("*.py"):
