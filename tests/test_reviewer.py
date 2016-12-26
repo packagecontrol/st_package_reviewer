@@ -69,18 +69,17 @@ def test_reviewer_integration(package_path, check_runner):
     assert not (expected_warnings and all_expected_warnings), \
         "Only one warnings meta file is allowed"
 
-    assert (expected_failures or all_expected_failures
-            or expected_warnings or all_expected_warnings), \
-        "No expected failures or warnings found in package"
+    expect_nothing = not (expected_failures or all_expected_failures
+                          or expected_warnings or all_expected_warnings)
 
     check_runner.run(package_path)
 
     failures = {failure.message for failure in check_runner.failures}
     assert failures & expected_failures == expected_failures
-    if all_expected_failures:
+    if all_expected_failures or expect_nothing:
         assert failures == all_expected_failures
 
     warnings = {warning.message for warning in check_runner.warnings}
     assert warnings & expected_warnings == expected_warnings
-    if all_expected_warnings:
+    if all_expected_warnings or expect_nothing:
         assert warnings == all_expected_warnings
