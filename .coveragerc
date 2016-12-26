@@ -1,0 +1,10 @@
+# TODO move to tox.ini
+# once https://bitbucket.org/ned/coveragepy/issues/519 is closed.
+
+[run]
+# branch = True
+source =
+    package_reviewer
+# omit =
+
+# [report]
