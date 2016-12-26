@@ -86,8 +86,8 @@ class CheckResourceFiles(Checker):
                     jsonc.loads(f.read())
                 except json.JSONDecodeError as e:
                     self.fail("File '{}' is badly formatted JSON (with comments)"
-                              .format(file_path),
-                              exc_info=e)
+                              .format(self._rel_path(file_path)),
+                              exception=e)
 
     def check_plist_files(self):
         plist_file_globs = {
@@ -103,8 +103,8 @@ class CheckResourceFiles(Checker):
                     plistlib.load(f)
                 except Exception as e:
                     self.fail("File '{}' is a badly formatted Plist"
-                              .format(file_path),
-                              exc_info=e)
+                              .format(self._rel_path(file_path)),
+                              exception=e)
 
     def check_xml_files(self):
         for file_path in self.glob("**/*.sublime-snippet"):
@@ -112,5 +112,8 @@ class CheckResourceFiles(Checker):
                 ET.parse(str(file_path))
             except ET.ParseError as e:
                 self.fail("File '{}' is badly formatted XML"
-                          .format(file_path),
-                          exc_info=e)
+                          .format(self._rel_path(file_path)),
+                          exception=e)
+
+    def _rel_path(self, path):
+        return path.relative_to(self.base_path)

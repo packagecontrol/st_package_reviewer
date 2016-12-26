@@ -1,10 +1,12 @@
 import abc
 from collections import namedtuple
 import logging
+import traceback
+import sys
 
 l = logging.getLogger(__name__)
 
-CFailure = namedtuple("CFailure", "message details exc_info")
+CFailure = namedtuple("CFailure", "message details exception exc_info")
 # `Warning` is a built-in
 CWarning = namedtuple("CWarning", "message")
 
@@ -17,9 +19,9 @@ class Checker(metaclass=abc.ABCMeta):
         self.warnings = set()
         self._checked = False
 
-    def fail(self, message, details=None, exc_info=None):
+    def fail(self, message, details=None, exception=None, exc_info=None):
         # TODO capture calling frame
-        failure = CFailure(message, details, exc_info)
+        failure = CFailure(message, details, exception, exc_info)
         self.failures.add(failure)
 
     def warn(self, message):
@@ -33,7 +35,7 @@ class Checker(metaclass=abc.ABCMeta):
             self.check()
         except Exception as e:
             msg = "Unhandled exception in 'check' routine"
-            self.fail(msg, exc_info=e)
+            self.fail(msg, exception=e, exc_info=sys.exc_info())
             l.exception(msg)
         self._checked = True
 
@@ -98,6 +100,8 @@ class CheckRunner:
             print("No failures")
         for failure in self.failures:
             print(failure)
+            if failure.exc_info:
+                traceback.print_exception(*failure.exc_info)
 
         print()
         if self.warnings:

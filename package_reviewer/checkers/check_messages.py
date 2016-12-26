@@ -23,7 +23,7 @@ class CheckMessages(Checker):
             try:
                 data = json.load(f)
             except json.JSONDecodeError as e:
-                self.fail("unable to load `messages.json`", exc_info=e)
+                self.fail("unable to load `messages.json`", exception=e)
                 return
 
         for key, rel_path in data.items():
