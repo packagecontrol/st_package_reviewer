@@ -7,7 +7,7 @@
 		}
 	],
     "settings": {
-        "rulers": [100]
+        "rulers": [99]
     },
     "build_systems": [
         {
