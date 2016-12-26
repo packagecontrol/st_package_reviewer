@@ -15,10 +15,17 @@ def main():
     args = parser.parse_args()
 
     # configure logging
-    logger = logging.getLogger("package_reviewer")
-    logger.addHandler(logging.StreamHandler())
+    l = logging.getLogger("package_reviewer")
+    l.addHandler(logging.StreamHandler())
     log_level = logging.DEBUG if args.v else logging.INFO
-    logger.setLevel(log_level)
+    l.setLevel(log_level)
+
+    # verify args
+    if not args.path.is_dir():
+        l.error("'%s' is not a directory", args.path)
+        return -1
+    else:
+        l.info("Package path: %s", args.path)
 
     # do stuff
     checkers = get_file_checkers()
