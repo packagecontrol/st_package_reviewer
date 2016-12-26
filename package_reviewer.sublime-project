@@ -1,0 +1,20 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+            "folder_exclude_patterns": [".*", "venv"]
+		}
+	],
+    "settings": {
+        "rulers": [100]
+    },
+    "build_systems": [
+        {
+            "name": "Run tests",
+            "shell_cmd": "pytest",
+            "working_dir": "${project_path}",
+            "file_regex": "^(.*?):(\\d+):() (.*?)"
+        }
+    ]
+}

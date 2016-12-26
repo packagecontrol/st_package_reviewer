@@ -6,3 +6,4 @@ htmlcov/
 .coverage
 
 *.pyc
+*.sublime-workspace
