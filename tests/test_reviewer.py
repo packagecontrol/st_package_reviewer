@@ -32,8 +32,7 @@ def config_logging():
     # Ensure we see debug output if tests fail
     logger = logging.getLogger("package_reviewer")
     logger.addHandler(logging.StreamHandler())
-    log_level = logging.DEBUG
-    logger.setLevel(log_level)
+    logger.setLevel(logging.DEBUG)
 
 
 config_logging()
@@ -67,7 +66,7 @@ def test_reviewer_integration(package_path, check_runner):
 
     expected_warnings = _read_file_to_set(Path(package_path, "warnings"))
     all_expected_warnings = _read_file_to_set(Path(package_path, "all_warnings"))
-    assert not (expected_warnings ^ all_expected_warnings), \
+    assert not (expected_warnings and all_expected_warnings), \
         "Only one warnings meta file is allowed"
 
     assert (expected_failures or all_expected_failures
@@ -76,12 +75,12 @@ def test_reviewer_integration(package_path, check_runner):
 
     check_runner.run(package_path)
 
-    failures = set(failure.message for failure in check_runner.failures)
+    failures = {failure.message for failure in check_runner.failures}
     assert failures & expected_failures == expected_failures
     if all_expected_failures:
         assert failures == all_expected_failures
 
-    warnings = set(warning.message for warning in check_runner.warnings)
+    warnings = {warning.message for warning in check_runner.warnings}
     assert warnings & expected_warnings == expected_warnings
     if all_expected_warnings:
         assert warnings == all_expected_warnings
