@@ -2,8 +2,7 @@
 .cache/
 venv/
 htmlcov/
-
+**/__pycache__/
 .coverage
 
-*.pyc
 *.sublime-workspace
