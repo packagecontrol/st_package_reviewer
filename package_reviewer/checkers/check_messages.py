@@ -17,14 +17,14 @@ class CheckMessages(Checker):
         elif folder_exists and not file_exists:
             self.fail("`messages` folder exists, but `messages.json` does not")
             return
-
         assert file_exists
-        try:
-            with Path(self.base_path, "messages.json").open() as f:
+
+        with Path(self.base_path, "messages.json").open() as f:
+            try:
                 data = json.load(f)
-        except json.JSONDecodeError as e:
-            self.fail("unable to load `messages.json`", exc_info=e)
-            return
+            except json.JSONDecodeError as e:
+                self.fail("unable to load `messages.json`", exc_info=e)
+                return
 
         for key, rel_path in data.items():
             if key == "install":
