@@ -1,5 +1,6 @@
-tox
-pytest
-flake8
 coverage
+flake8
 pip-tools
+pytest
+pytest-watch
+tox
