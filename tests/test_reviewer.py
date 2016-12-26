@@ -59,6 +59,12 @@ def test_reviewer_integration(package_path, check_runner):
     If all failures or warnings should be compared,
     specify them in "all_failures" and "all_warnings".
     """
+
+    # Run checks first and report them to stdout,
+    # so we have something to inspect when the test fails.
+    check_runner.run(package_path)
+    check_runner.report()
+
     expected_failures = _read_file_to_set(Path(package_path, "failures"))
     all_expected_failures = _read_file_to_set(Path(package_path, "all_failures"))
     assert not (expected_failures and all_expected_failures), \
@@ -71,8 +77,6 @@ def test_reviewer_integration(package_path, check_runner):
 
     expect_nothing = not (expected_failures or all_expected_failures
                           or expected_warnings or all_expected_warnings)
-
-    check_runner.run(package_path)
 
     failures = {failure.message for failure in check_runner.failures}
     assert failures & expected_failures == expected_failures
