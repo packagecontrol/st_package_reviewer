@@ -3,7 +3,7 @@
 	[
 		{
 			"path": ".",
-            "folder_exclude_patterns": [".*", "venv"]
+            "folder_exclude_patterns": [".*", "htmlcov", "venv"]
 		}
 	],
     "settings": {
