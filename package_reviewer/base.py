@@ -1,33 +1,47 @@
 import abc
 from collections import namedtuple
+from contextlib import contextmanager
+import functools
 import logging
 import traceback
 import sys
 
 l = logging.getLogger(__name__)
 
-CFailure = namedtuple("CFailure", "message details exception exc_info")
-# `Warning` is a built-in
-CWarning = namedtuple("CWarning", "message")
+
+class Report(namedtuple("_Report", "message context exception exc_info")):
+    __slots__ = ()
+
+    _indent = " " * 4
+
+    def report(self):
+        print("- {}".format(self.message))
+        for cont in self.context:
+            print("{}{}".format(self._indent, cont))
+        if self.exception:
+            print("{}Exception: {}".format(self._indent, self.exception))
+        if self.exc_info:
+            traceback.print_exception(*self.exc_info)
 
 
 class Checker(metaclass=abc.ABCMeta):
 
     def __init__(self):
-        self.failures = set()
-        self.warnings = set()
+        self.failures = []
+        self.warnings = []
         self._checked = False
+        self._context_stack = []
 
-    def fail(self, message, details=None, exception=None, exc_info=None):
-        # TODO capture calling frame
-        failure = CFailure(message, details, exception, exc_info)
-        self.failures.add(failure)
+        # construct reporting functions
+        self.fail = functools.partial(self._append_report, self.failures)
+        self.warn = functools.partial(self._append_report, self.warnings)
 
-    def warn(self, message):
-        # Warnings don't cause checks to fail
+    def _append_report(self, append_to, message, context=None, exception=None, exc_info=None):
         # TODO capture calling frame
-        warning = CWarning(message)
-        self.warnings.add(warning)
+        if context is None:
+            context = tuple(self._context_stack)
+        report = Report(message, context[:], exception, exc_info)
+        append_to.append(report)
 
     def perform_check(self):
         try:
@@ -61,6 +75,12 @@ class Checker(metaclass=abc.ABCMeta):
     def check(self):
         pass
 
+    @contextmanager
+    def context(self, context_entry):
+        self._context_stack.append(context_entry)
+        yield
+        assert self._context_stack.pop() == context_entry
+
 
 class MultiCheckerMixin:
 
@@ -80,20 +100,20 @@ class CheckRunner:
 
     def __init__(self, checkers):
         self.checkers = checkers
-        self.failures = set()
-        self.warnings = set()
+        self.failures = []
+        self.warnings = []
         self._checked = False
 
     def run(self, *args, **kwargs):
-        l.debug("Running checkers...\n")
+        l.debug("\nRunning checkers...")
         objs = []
         for checker in self.checkers:
             checker_obj = checker(*args, **kwargs)
             objs.append(checker_obj)
 
             checker_obj.perform_check()
-            self.failures |= checker_obj.failures
-            self.warnings |= checker_obj.warnings
+            self.failures.extend(checker_obj.failures)
+            self.warnings.extend(checker_obj.warnings)
             l.debug("Checker '%s' result: %s",
                     checker_obj.__class__.__name__,
                     checker_obj.result())
@@ -107,7 +127,6 @@ class CheckRunner:
         return not bool(self.failures)
 
     def report(self):
-        # TODO refine output
         if not self._checked:
             raise RuntimeError("Check has not been perfomed yet")
 
@@ -117,9 +136,7 @@ class CheckRunner:
         else:
             print("No failures")
         for failure in self.failures:
-            print(failure)
-            if failure.exc_info:
-                traceback.print_exception(*failure.exc_info)
+            failure.report()
 
         print()
         if self.warnings:
@@ -128,6 +145,6 @@ class CheckRunner:
             print("No warnings")
 
         for warning in self.warnings:
-            print(warning)
+            warning.report()
 
         return not bool(self.failures)
