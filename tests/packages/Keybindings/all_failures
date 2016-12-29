@@ -1,7 +1,8 @@
-Binding is missing the keys {'command'}
-Binding is missing the keys {'keys'}
-The binding ['ctrl+b'] unconditionally overrides a default binding
 The binding ['super+alt+v'] unconditionally overrides a default binding
 The binding ['super+alt+up'] unconditionally overrides a default binding
-Unrecognized modifier key 'alts'
+Binding is missing the keys {'command'}
+Binding is missing the keys {'keys'}
 'keys' key is empty or not a list
+Invalid modifier key 'alts'
+Invalid key 'nope'
+The binding ['ctrl+b'] unconditionally overrides a default binding

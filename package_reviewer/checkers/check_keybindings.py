@@ -151,23 +151,22 @@ class KeyMapping:
         for key_chord in chords:
             chord_parts = []
             while True:
-                modifier, plus, key_chord = key_chord.partition("+")
+                key, plus, key_chord = key_chord.partition("+")
                 if not key_chord:  # we're at the end
                     if plus:  # a chord with '+' as key
-                        modifier = plus
-                        plus = ""
-                    # if not cls._verify_key(modifier):  # TODO
-                    #     return None
+                        key = plus
+                    if not cls._verify_key(key):
+                        raise KeyMappingError("Invalid key '{}'".format(key))
                     chord_parts.sort(key=modifiers.index)
-                    chord_parts.append(modifier)
+                    chord_parts.append(key)
                     break
 
-                if modifier == "option":
-                    modifier = "alt"
-                if modifier not in modifiers:
-                    raise KeyMappingError("Unrecognized modifier key '{}'".format(modifier))
+                if key == "option":
+                    key = "alt"
+                if key not in modifiers:
+                    raise KeyMappingError("Invalid modifier key '{}'".format(key))
 
-                chord_parts.append(modifier)
+                chord_parts.append(key)
 
             norm_chords.append("+".join(chord_parts))
 
@@ -175,6 +174,33 @@ class KeyMapping:
             l.debug("normalized chords {!r} to {!r}".format(chords, norm_chords))
         return norm_chords
 
-    # @classmethod
-    # def _verify_key(cls, key):
-    #     return True  # TODO
+    @classmethod
+    def _verify_key(cls, key):
+        if len(key) == 1:
+            # should include all typable symbols and more
+            # TODO what about uppercase letters?
+            return True
+        elif key in cls._known_keys:
+            # multi-character key aliases
+            return True
+        else:
+            return False
+
+    _known_keys = set()
+    # _known_keys |= {chr(c) for c in range(ord('a'), ord('z') + 1)}
+    _known_keys |= {"f{}".format(i) for i in range(1, 21)}
+    _known_keys |= {"keypad{}".format(i) for i in range(10)}
+    _known_keys |= {"up", "down", "left", "right",
+                    "insert", "delete", "home", "end", "pageup", "pagedown",
+                    "backspace", "enter", "tab",
+                    "escape", "pause", "break",
+                    "space", "context_menu",
+                    "keypad_period", "keypad_divide", "keypad_multiply", "keypad_minus",
+                    "keypad_plus", "keypad_enter",
+                    "browser_back", "browser_forward", "browser_refresh", "browser_stop",
+                    "browser_search", "browser_favorites", "browser_home",
+                    "clear", "sysreq",
+                    # these have single-character equivalents
+                    "plus", "minus", "equals", "forward_slash", "backquote",
+                    # Note: this list is incomplete and sourced from the default bindings
+                    }

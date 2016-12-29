@@ -16,8 +16,12 @@
   { "command": "lolk" },
   // binding with supplementary keys
   { "keys": ["alt+x"], "command": "noop", "extra_key": "ok" },
+  // invalid keys value
+  { "keys": "alts+x", "command": "noop" },
   // invalid modifier
   { "keys": ["alts+x"], "command": "noop" },
-  // invalid keys value
-  { "keys": "alts+x", "command": "noop" }
+  // invalid key in multi-chord
+  { "keys": ["ctrl+k", "nope"], "command": "noop" },
+  // valid key binding
+  { "keys": ["super+ctrl+alt+shift++"], "command": "noop" }
 ]
