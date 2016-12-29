@@ -7,6 +7,9 @@ reported json.DecodeErrors may report "wrong" line and column numbers.
 import json
 import re
 
+
+__all__ = ('loads')
+
 _re_js_comments_str = r"""
     (                               # Capture code
         (?:
