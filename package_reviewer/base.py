@@ -6,6 +6,8 @@ import logging
 import traceback
 import sys
 
+from . import debug_active
+
 l = logging.getLogger(__name__)
 
 
@@ -49,6 +51,9 @@ class Checker(metaclass=abc.ABCMeta):
         except Exception as e:
             msg = "Unhandled exception in 'check' routine"
             self.fail(msg, exception=e, exc_info=sys.exc_info())
+            if debug_active():
+                import pdb
+                pdb.post_mortem()
             l.exception(msg)
         self._checked = True
 

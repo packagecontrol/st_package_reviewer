@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 import sys
 
+from . import set_debug, debug_active
 from .base import CheckRunner
 from .checkers import get_file_checkers
 
@@ -11,13 +12,21 @@ def main():
     parser = argparse.ArgumentParser(description="Check a Sublime Text package for common errors.")
     parser.add_argument("path", type=Path,
                         help="Path to the package to be checked.")
-    parser.add_argument("-v", action='store_true', help="Increase verbosity")
+    parser.add_argument("--verbose", "-v", action='store_true',
+                        help="Increase verbosity.")
+    parser.add_argument("--debug", action='store_true',
+                        help="Enter pdb on excpetions. Implies --verbose.")
     args = parser.parse_args()
+
+    # post parsing
+    if args.debug:
+        args.verbose = True
+        set_debug(True)
 
     # configure logging
     l = logging.getLogger("package_reviewer")
     l.addHandler(logging.StreamHandler())
-    log_level = logging.DEBUG if args.v else logging.INFO
+    log_level = logging.DEBUG if args.verbose else logging.INFO
     l.setLevel(log_level)
 
     # verify args
@@ -28,10 +37,16 @@ def main():
         l.info("Package path: %s", args.path)
 
     # do stuff
-    checkers = get_file_checkers()
-    runner = CheckRunner(checkers)
-    runner.run(args.path)
-    return not runner.report()
+    try:
+        checkers = get_file_checkers()
+        runner = CheckRunner(checkers)
+        runner.run(args.path)
+        return not runner.report()
+    except Exception:
+        if debug_active():
+            import pdb
+            pdb.post_mortem()
+        raise
 
 
 if __name__ == '__main__':
