@@ -17,7 +17,7 @@ VALID_FILENAMES = PLATFORM_FILENAMES + ("Default.sublime-keymap",)
 l = logging.getLogger(__name__)
 
 
-class CheckKeybindings(FileChecker):
+class CheckKeymaps(FileChecker):
 
     def check(self):
         keymap_files = self.glob("**/*.sublime-keymap")
@@ -30,7 +30,7 @@ class CheckKeybindings(FileChecker):
             return
 
         # cache default keymap files
-        def_bindings = KeyMapping.default_maps()
+        def_maps = KeyMapping.default_maps()
 
         # check for conflicts with default package
         for path in keymap_files:
@@ -47,7 +47,7 @@ class CheckKeybindings(FileChecker):
 
                 conflicts = []
                 for plat in platforms:
-                    local_conflicts = k_map.find_conflicts(def_bindings[plat])
+                    local_conflicts = k_map.find_conflicts(def_maps[plat])
                     l.debug("#conflicts for %s on platform %s: %d",
                             self.rel_path(k_map.path), plat, len(local_conflicts))
                     # prevent duplicates while maintaining order
