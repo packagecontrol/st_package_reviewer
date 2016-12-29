@@ -1,0 +1,4 @@
+[
+  // artificial override binding (but not in a standard file)
+  { "keys": ["ctrl+b"], "command": "hurf_durf" }
+]
