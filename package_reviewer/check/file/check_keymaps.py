@@ -40,7 +40,6 @@ class CheckKeymaps(FileChecker):
             m = re.search(r"\((.*?)\)", path.name)
             if m:
                 platforms = {m.group(1)}
-            print("platforms: {}".format(platforms))
 
             k_map = KeyMapping(path)
 
