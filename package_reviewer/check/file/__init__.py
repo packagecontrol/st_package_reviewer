@@ -2,7 +2,9 @@ import functools
 import itertools
 from pathlib import Path
 
-from .base import Checker
+from .. import Checker, find_all
+
+__all__ = ('FileChecker', 'get_checkers')
 
 
 class FileChecker(Checker):
@@ -32,3 +34,11 @@ class FileChecker(Checker):
 
     def rel_path(self, path):
         return path.relative_to(self.base_path)
+
+
+get_checkers = functools.partial(
+    find_all,
+    Path(__file__).parent,
+    __package__,
+    base_class=FileChecker
+)

@@ -4,8 +4,8 @@ from pathlib import Path
 import sys
 
 from . import set_debug, debug_active
-from .base import CheckRunner
-from .checkers import get_file_checkers
+from .runner import CheckRunner
+from .check import file as file_c
 
 
 def main():
@@ -36,9 +36,11 @@ def main():
     else:
         l.info("Package path: %s", args.path)
 
+    # collect checkers (after logging is configured)
+
     # do stuff
+    checkers = file_c.get_checkers()
     try:
-        checkers = get_file_checkers()
         runner = CheckRunner(checkers)
         runner.run(args.path)
         return not runner.report()

@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from package_reviewer.base import CheckRunner
-from package_reviewer.checkers import get_file_checkers
+from package_reviewer.runner import CheckRunner
+from package_reviewer.check import file as file_c
 
 
 def _collect_test_packages():
@@ -25,7 +25,8 @@ def package_path(request):
 
 @pytest.fixture(scope='function')
 def check_runner():
-    return CheckRunner(get_file_checkers())
+    checkers = file_c.get_checkers()
+    return CheckRunner(checkers)
 
 
 def config_logging():
@@ -36,6 +37,8 @@ def config_logging():
 
 
 config_logging()
+
+# import after logging is configured
 
 
 ##############################################################################

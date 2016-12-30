@@ -2,7 +2,7 @@ import json
 
 from semver import SemVer
 
-from ..file import FileChecker
+from . import FileChecker
 
 
 class CheckMessages(FileChecker):

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ..file import FileChecker
+from . import FileChecker
 
 
 DATA_PATH = Path(__file__).parent.parent / "data"

@@ -3,8 +3,8 @@ import logging
 import plistlib
 import xml.etree.ElementTree as ET
 
-from ..file import FileChecker
-from .. import jsonc
+from . import FileChecker
+import jsonc
 
 l = logging.getLogger(__name__)
 

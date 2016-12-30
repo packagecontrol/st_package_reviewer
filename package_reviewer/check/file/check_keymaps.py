@@ -3,11 +3,13 @@ import logging
 import re
 from pathlib import Path
 
-from .. import jsonc
-from ..file import FileChecker
+import jsonc
+from . import FileChecker
+
+from package_reviewer import __file__ as base_init_path
 
 
-DATA_PATH = Path(__file__).parent.parent / "data"
+DATA_PATH = Path(base_init_path).parent / "data"
 
 PLATFORMS = ("Linux", "OSX", "Windows")
 PLATFORM_FILENAMES = tuple("Default ({}).sublime-keymap".format(plat)

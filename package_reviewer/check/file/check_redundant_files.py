@@ -1,6 +1,6 @@
 import logging
 
-from ..file import FileChecker
+from . import FileChecker
 
 l = logging.getLogger(__name__)
 
