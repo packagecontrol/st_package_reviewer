@@ -79,7 +79,7 @@ def find_all(path, package, base_class=Checker, exclude=[]):
     """Find and collect all checker subclasses at the specified path."""
     all_checkers = set()
 
-    l.debug("Collecting 'checkers' sub-modules...")
+    l.debug("Collecting checkers from sub-modules of '%s'...", package)
     for checker_file in path.glob("*.py"):
         if checker_file.name == "__init__.py":
             l.debug("Skipping %r", checker_file.name)
