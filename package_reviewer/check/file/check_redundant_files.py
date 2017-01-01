@@ -22,5 +22,5 @@ class CheckPycFiles(FileChecker):
 
         for path in pyc_files:
             if path.with_suffix(".py").is_file():
-                self.fail("'{}' is redundant because its corresponding .py file exists"
-                          .format(self.rel_path(path)))
+                with self.file_context(path):
+                    self.fail("'.pyc' file is redundant because its corresponding .py file exists")

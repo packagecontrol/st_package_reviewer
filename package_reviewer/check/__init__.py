@@ -73,6 +73,13 @@ class Checker(metaclass=abc.ABCMeta):
         yield
         assert self._context_stack.pop() == context_entry
 
+    def file_context(self, path):
+        try:
+            path = self.rel_path(path)
+        except ValueError:
+            pass
+        return self.context("File: {}".format(path))
+
 
 @functools.lru_cache()
 def find_all(path, package, base_class=Checker, exclude=[]):

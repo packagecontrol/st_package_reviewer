@@ -1,1 +1,3 @@
-File 'invalid.tmLanguage' is a badly formatted Plist
+- Invalid Plist
+    File: invalid.tmLanguage
+    Exception: unexpected key at line 10

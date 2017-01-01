@@ -43,7 +43,7 @@ class CheckKeymaps(FileChecker):
 
             k_map = KeyMapping(path)
 
-            with self.context("File: {}".format(self.rel_path(path))):
+            with self.file_context(path):
                 self._verify_keymap(k_map)
 
                 conflicts = []
@@ -71,7 +71,7 @@ class CheckKeymaps(FileChecker):
 
         idx_to_del = set()
         for i, binding in enumerate(k_map.data):
-            with self.context("Binding: {}".format(json.dumps(binding))):
+            with self.context("Binding: {}".format(json.dumps(binding, sort_keys=True))):
                 keys = set(binding.keys())
                 missing_keys = required_keys - keys
                 if missing_keys:

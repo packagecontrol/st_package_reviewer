@@ -1,1 +1,2 @@
-'ttest.pyc' is redundant because its corresponding .py file exists
+- '.pyc' file is redundant because its corresponding .py file exists
+    File: ttest.pyc

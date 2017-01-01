@@ -23,13 +23,12 @@ class CheckJSONCFiles(FileChecker):
         }
 
         for file_path in self.globs(*jsonc_file_globs):
-            with file_path.open(encoding='utf-8') as f:
-                try:
-                    jsonc.loads(f.read())
-                except json.JSONDecodeError as e:
-                    self.fail("File '{}' is badly formatted JSON (with comments)"
-                              .format(self.rel_path(file_path)),
-                              exception=e)
+            with self.file_context(file_path):
+                with file_path.open(encoding='utf-8') as f:
+                    try:
+                        jsonc.loads(f.read())
+                    except json.JSONDecodeError as e:
+                        self.fail("Invalid JSON (with comments)", exception=e)
 
 
 class CheckPlistFiles(FileChecker):
@@ -43,22 +42,20 @@ class CheckPlistFiles(FileChecker):
         }
 
         for file_path in self.globs(*plist_file_globs):
-            with file_path.open('rb') as f:
-                try:
-                    plistlib.load(f)
-                except ValueError as e:
-                    self.fail("File '{}' is a badly formatted Plist"
-                              .format(self.rel_path(file_path)),
-                              exception=e)
+            with self.file_context(file_path):
+                with file_path.open('rb') as f:
+                    try:
+                        plistlib.load(f)
+                    except ValueError as e:
+                        self.fail("Invalid Plist", exception=e)
 
 
 class CheckXmlFiles(FileChecker):
 
     def check(self):
         for file_path in self.glob("**/*.sublime-snippet"):
-            try:
-                ET.parse(str(file_path))
-            except ET.ParseError as e:
-                self.fail("File '{}' is badly formatted XML"
-                          .format(self.rel_path(file_path)),
-                          exception=e)
+            with self.file_context(file_path):
+                try:
+                    ET.parse(str(file_path))
+                except ET.ParseError as e:
+                    self.fail("Invalid XML", exception=e)

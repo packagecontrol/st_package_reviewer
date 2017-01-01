@@ -25,7 +25,7 @@ class CheckMousemaps(FileChecker):
 
         # just warn about mousemap files existing
         for path in mousemap_files:
-            with self.context("File: {}".format(self.rel_path(path))):
+            with self.file_context(path):
                 self.warn("It is not advised to specify mousemaps because of how limited the "
                           "configuration options are. Instead, suggest the user to add "
                           "specific bindings to their User package.")

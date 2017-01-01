@@ -1,8 +1,21 @@
-The binding ['super+alt+v'] unconditionally overrides a default binding
-The binding ['super+alt+up'] unconditionally overrides a default binding
-Binding is missing the keys {'command'}
-Binding is missing the keys {'keys'}
-'keys' key is empty or not a list
-Invalid modifier key 'alts'
-Invalid key 'nope'
-The binding ['ctrl+b'] unconditionally overrides a default binding
+- Binding is missing the keys {'command'}
+    File: Default.sublime-keymap
+    Binding: {"keys": ["ctrl+x"]}
+- Binding is missing the keys {'keys'}
+    File: Default.sublime-keymap
+    Binding: {"command": "lolk"}
+- 'keys' key is empty or not a list
+    File: Default.sublime-keymap
+    Binding: {"command": "noop", "keys": "alts+x"}
+- Invalid modifier key 'alts'
+    File: Default.sublime-keymap
+    Binding: {"command": "noop", "keys": ["alts+x"]}
+- Invalid key 'nope'
+    File: Default.sublime-keymap
+    Binding: {"command": "noop", "keys": ["ctrl+k", "nope"]}
+- The binding ['ctrl+b'] unconditionally overrides a default binding
+    File: Default.sublime-keymap
+- The binding ['super+alt+v'] unconditionally overrides a default binding
+    File: Default (OSX).sublime-keymap
+- The binding ['super+alt+up'] unconditionally overrides a default binding
+    File: Default (OSX).sublime-keymap

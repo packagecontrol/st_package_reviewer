@@ -1,3 +1,4 @@
+from collections import namedtuple
 import logging
 from pathlib import Path
 
@@ -20,11 +21,13 @@ test_packages = list(_collect_test_packages())
 
 @pytest.fixture(scope='function', params=test_packages)
 def package_path(request):
+    """Path to a package to be tested."""
     return request.param
 
 
 @pytest.fixture(scope='function')
 def check_runner():
+    """Return an initialized CheckRunner with all file checkers."""
     checkers = file_c.get_checkers()
     return CheckRunner(checkers)
 
@@ -44,14 +47,34 @@ config_logging()
 ##############################################################################
 
 
-def _read_file_to_set(file_path):
+CheckAssert = namedtuple("CheckAssert", "message details")
+
+
+def _read_check_asserts(file_path):
+    """Read CheckAsserts from file."""
+    asserts = set()
     if file_path.is_file():
         with file_path.open('r') as f:
-            lines = {line.strip() for line in f}
+            message = None
+            details = []
+            line_iter = iter(f)
 
-        return lines - {""}
-    else:
-        return set()
+            line = next(line_iter)
+            while line:
+                assert line.startswith('- ')
+                message = line[2:].strip()
+                details = []
+
+                for line in line_iter:
+                    if not line.startswith(' '):
+                        break
+                    details.append(line.strip())
+                else:
+                    line = None
+
+                asserts.add(CheckAssert(message, tuple(details)))
+
+    return asserts
 
 
 def test_reviewer_integration(package_path, check_runner):
@@ -68,25 +91,35 @@ def test_reviewer_integration(package_path, check_runner):
     check_runner.run(package_path)
     check_runner.report()
 
-    expected_failures = _read_file_to_set(Path(package_path, "failures"))
-    all_expected_failures = _read_file_to_set(Path(package_path, "all_failures"))
-    assert not (expected_failures and all_expected_failures), \
+    failure_asserts = _read_check_asserts(Path(package_path, "failures"))
+    all_failure_asserts = _read_check_asserts(Path(package_path, "all_failures"))
+    assert not (failure_asserts and all_failure_asserts), \
         "Only one failures meta file is allowed"
 
-    expected_warnings = _read_file_to_set(Path(package_path, "warnings"))
-    all_expected_warnings = _read_file_to_set(Path(package_path, "all_warnings"))
-    assert not (expected_warnings and all_expected_warnings), \
+    warning_asserts = _read_check_asserts(Path(package_path, "warnings"))
+    all_warning_asserts = _read_check_asserts(Path(package_path, "all_warnings"))
+    assert not (warning_asserts and all_warning_asserts), \
         "Only one warnings meta file is allowed"
 
-    expect_nothing = not (expected_failures or all_expected_failures
-                          or expected_warnings or all_expected_warnings)
+    assert_none = not (failure_asserts or all_failure_asserts
+                       or warning_asserts or all_warning_asserts)
 
-    failures = {failure.message for failure in check_runner.failures}
-    assert failures & expected_failures == expected_failures
-    if all_expected_failures or expect_nothing:
-        assert failures == all_expected_failures
+    failures = {CheckAssert(failure.message, failure.to_details())
+                for failure in check_runner.failures}
+    assert len(failures) == len(check_runner.failures), "TODO: Revisit tests"
+    warnings = {CheckAssert(warning.message, warning.to_details())
+                for warning in check_runner.warnings}
+    assert len(warnings) == len(check_runner.warnings), "TODO: Revisit tests"
 
-    warnings = {warning.message for warning in check_runner.warnings}
-    assert warnings & expected_warnings == expected_warnings
-    if all_expected_warnings or expect_nothing:
-        assert warnings == all_expected_warnings
+    assert assert_none or (failures or warnings), \
+        "No asserts found for package but there were reports"
+
+    if all_failure_asserts or assert_none:
+        assert failures == all_failure_asserts
+    elif failures:
+        assert failures >= failure_asserts
+
+    if all_warning_asserts or assert_none:
+        assert warnings == all_warning_asserts
+    elif warnings:
+        assert warnings >= warning_asserts

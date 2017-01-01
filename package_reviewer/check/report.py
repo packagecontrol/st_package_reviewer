@@ -15,3 +15,11 @@ class Report(namedtuple("_Report", "message context exception exc_info")):
             print("{}Exception: {}".format(self._indent, self.exception))
         if self.exc_info:
             traceback.print_exception(*self.exc_info)
+
+    def to_details(self):
+        details = []
+        for cont in self.context:
+            details.append("{}".format(cont))
+        if self.exception:
+            details.append("Exception: {}".format(self.exception))
+        return tuple(details)
