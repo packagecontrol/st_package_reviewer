@@ -35,6 +35,13 @@ class FileChecker(Checker):
     def rel_path(self, path):
         return path.relative_to(self.base_path)
 
+    def file_context(self, path):
+        try:
+            path = self.rel_path(path)
+        except ValueError:
+            pass
+        return self.context("File: {}".format(path))
+
 
 get_checkers = functools.partial(
     find_all,
