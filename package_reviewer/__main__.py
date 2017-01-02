@@ -16,7 +16,7 @@ from .check import file as file_c, repo as repo_c
 l = logging.getLogger("package_reviewer")
 
 
-def _parse_nargs(nargs):
+def _prepare_nargs(nargs):
     new_nargs = []
     for arg in nargs:
         if re.match(r"https?://", arg):
@@ -61,8 +61,8 @@ def main():
     l.setLevel(log_level)
 
     # verify args
-    parsed_nargs = _parse_nargs(args.nargs)
-    if parsed_nargs is None:
+    nargs = _prepare_nargs(args.nargs)
+    if nargs is None:
         return -1
 
     # start doing work
@@ -72,7 +72,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="pkg-rev_") as tmpdir_s:
         tmpdir = Path(tmpdir_s)
 
-        for arg, orig_arg in zip(parsed_nargs, args.nargs):
+        for arg, orig_arg in zip(nargs, args.nargs):
             if not isinstance(arg, Path):
                 l.info("Repository URL: %s", orig_arg)
 
