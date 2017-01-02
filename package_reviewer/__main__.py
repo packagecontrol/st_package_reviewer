@@ -38,9 +38,10 @@ def _prepare_nargs(nargs):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Check a Sublime Text package for common errors.")
+    parser = argparse.ArgumentParser(prog="python -m {}".format(__package__),
+                                     description="Check a Sublime Text package for common errors.")
     # TODO support multiple args and run checkers on each
-    parser.add_argument("nargs", nargs='+', metavar="path or repo URL",
+    parser.add_argument("nargs", nargs='+', metavar="path_or_URL",
                         help="URL to the repository or path to the package to be checked.")
     parser.add_argument("--repo-only", action='store_true',
                         help="Do not check the package itself and only its repository.")
