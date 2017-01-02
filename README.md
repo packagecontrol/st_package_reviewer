@@ -6,11 +6,14 @@ Supports passing local file paths
 or URLs to GitHub repositories.
 
 This README focuses on installation and usage of the tool.
-For how to **resolve** failures or warnings
+For how to *resolve* failures or warnings
 reported by the tool,
-refer to the [wiki][].
+[refer to the wiki][wiki].
+
 
 ## Installation
+
+Requires **Python 3.4** or higher.
 
 ```bash
 $ git clone https://github.com/packagecontrol/package_reviewer.git
@@ -20,7 +23,9 @@ $ source venv/bin/activate  # Windows: .\venv\Scripts\activate.bat
 $ pip install -r requirements.txt
 ```
 
+
 ## Usage
+
 ```
 $ python -m package_reviewer --help
 usage: python -m package_reviewer [-h] [--repo-only] [--verbose] [--debug]
