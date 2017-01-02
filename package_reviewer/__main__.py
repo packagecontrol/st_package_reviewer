@@ -45,7 +45,7 @@ def main():
                         help="URL to the repository or path to the package to be checked.")
     parser.add_argument("--repo-only", action='store_true',
                         help="Do not check the package itself and only its repository.")
-    parser.add_argument("--verbose", "-v", action='store_true',
+    parser.add_argument("-v", "--verbose", action='store_true',
                         help="Increase verbosity.")
     parser.add_argument("--debug", action='store_true',
                         help="Enter pdb on excpetions. Implies --verbose.")

@@ -39,7 +39,7 @@ positional arguments:
 optional arguments:
   -h, --help     show this help message and exit
   --repo-only    Do not check the package itself and only its repository.
-  --verbose, -v  Increase verbosity.
+  --v, -verbose  Increase verbosity.
   --debug        Enter pdb on excpetions. Implies --verbose.
 ```
 
