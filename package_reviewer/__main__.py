@@ -39,9 +39,21 @@ def _prepare_nargs(nargs):
 
 
 def main():
+    """Return values:
+        0: No errors
+        -1: Invalid command line arguments
+
+    Non-interactive mode:
+        1: Package check finished with failures
+        2: Repository check finished with failures
+        3: Both finished with failures
+    """
+
     parser = argparse.ArgumentParser(prog="python -m {}".format(__package__),
                                      description="Check a Sublime Text package for common errors.")
-    parser.add_argument("nargs", nargs='+', metavar="path_or_URL",
+    parser.add_argument("-i", "--interactive", action='store_true',
+                        help="Start interactive mode. '-i' and 'nargs' are exclusive.")
+    parser.add_argument("nargs", nargs='*', metavar="path_or_URL",
                         help="URL to the repository or path to the package to be checked.")
     parser.add_argument("--clip", action='store_true',
                         help="Copy report to clipboard.")
@@ -57,6 +69,10 @@ def main():
     if args.debug:
         args.verbose = True
         set_debug(True)
+    if args.nargs and args.interactive:
+        print("error: '-i' and 'nargs' are exclusive.")
+        parser.print_usage()
+        return -1
 
     # configure logging
     l.addHandler(logging.StreamHandler())
@@ -70,66 +86,93 @@ def main():
 
     # start doing work
     gh = GitHub()
-    exit_code = 0
 
     out = io.StringIO()
+
+    def _process_arg(arg, orig_arg):
+        exit_code = 0
+        if not isinstance(arg, Path):
+            repo_location, url = arg, orig_arg
+            _report_for(repo_location[1], out)
+
+            l.info("Repository URL: %s", url)
+            print("- Repository checks -", file=out)
+            print(file=out)
+
+            l.debug("Fetching repository information for %s", repo_location)
+            repo = gh.repository(*repo_location)
+            l.debug("Github rate limit remaining: %s", repo.ratelimit_remaining)
+            if not repo:
+                l.error("'%s' does not point to a public repository\n", url)
+                return
+
+            if not _run_checks(repo_c.get_checkers(), out, [repo]):
+                exit_code = 2
+            print(file=out)
+
+            if args.repo_only:
+                l.info("Skipping package download due to --repo-only option")
+                return exit_code
+
+            ref = repo_tools.latest_ref(repo)
+            l.info("Latest ref: %s", ref)
+
+            path = repo_tools.download(repo, ref, tmpdir)
+            if path is None:
+                l.error("Downloading %s failed; skipping package checks...", url)
+                return exit_code
+
+            print("- Package checks -", file=out)
+            print(file=out)
+
+        else:
+            path = arg
+            _report_for(path.name, out)
+            l.info("Package path: %s", path)
+
+        if not _run_checks(file_c.get_checkers(), out, [path]):
+            exit_code = 1
+
+        return exit_code
+
+    def _finalize_report():
+        print(file=out)
+        print("For more details on the report messages (for example how to resolve them), go to:\n"
+              "https://github.com/packagecontrol/package_reviewer/wiki", file=out)
+        print(file=out)
+        report = out.getvalue()
+        print(report, end='')
+
+        if args.clip:
+            import pyperclip
+            pyperclip.copy(report)
+
+        out.close()
+
     with tempfile.TemporaryDirectory(prefix="pkg-rev_") as tmpdir_s:
         tmpdir = Path(tmpdir_s)
 
-        for arg, orig_arg in zip(nargs, args.nargs):
-            if not isinstance(arg, Path):
-                repo_location, url = arg, orig_arg
-                _report_for(repo_location[1], out)
+        if args.interactive:
+            while True:
+                try:
+                    orig_arg = input("path/url> ")
+                except (EOFError, KeyboardInterrupt):
+                    return 0
 
-                l.info("Repository URL: %s", url)
-                print("- Repository checks -", file=out)
-                print(file=out)
-
-                l.debug("Fetching repository information for %s", repo_location)
-                repo = gh.repository(*repo_location)
-                l.debug("Github rate limit remaining: %s", repo.ratelimit_remaining)
-                if not repo:
-                    l.error("'%s' does not point to a public repository\n", url)
+                arg = _prepare_nargs([orig_arg])
+                if arg is None:
                     continue
+                else:
+                    _process_arg(arg[0], orig_arg)
+                    _finalize_report()
+                    out = io.StringIO()
+        else:
+            exit_code = 0
+            for arg, orig_arg in zip(nargs, args.nargs):
+                exit_code &= _process_arg(arg, orig_arg)
 
-                if not _run_checks(repo_c.get_checkers(), out, [repo]):
-                    exit_code &= 2
-                print(file=out)
-
-                if args.repo_only:
-                    l.info("Skipping package download due to --repo-only option")
-                    continue
-
-                ref = repo_tools.latest_ref(repo)
-                l.info("Latest ref: %s", ref)
-
-                path = repo_tools.download(repo, ref, tmpdir)
-                if path is None:
-                    l.error("Downloading %s failed; skipping package checks...", url)
-                    continue
-
-                print("- Package checks -", file=out)
-                print(file=out)
-
-            else:
-                path = arg
-                _report_for(path.name, out)
-                l.info("Package path: %s", path)
-
-            if not _run_checks(file_c.get_checkers(), out, [path]):
-                exit_code &= 1
-
-    print(file=out)
-    print("For more details on the report messages (for example how to resolve them), go to:\n"
-          "https://github.com/packagecontrol/package_reviewer/wiki", file=out)
-    report = out.getvalue()
-    print(report, end='')
-
-    if args.clip:
-        import pyperclip
-        pyperclip.copy(report)
-
-    return exit_code
+            _finalize_report()
+            return exit_code
 
 
 def _report_for(name, file):
