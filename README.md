@@ -32,7 +32,7 @@ $ pip install -r requirements.txt
 
 ```
 $ python -m package_reviewer --help
-usage: python -m package_reviewer [-h] [--repo-only] [--verbose] [--debug]
+usage: python -m package_reviewer [-h] [--clip] [--repo-only] [-v] [--debug]
                                   path_or_URL [path_or_URL ...]
 
 Check a Sublime Text package for common errors.
@@ -42,8 +42,9 @@ positional arguments:
 
 optional arguments:
   -h, --help     show this help message and exit
+  --clip         Copy report to clipboard.
   --repo-only    Do not check the package itself and only its repository.
-  --v, -verbose  Increase verbosity.
+  -v, --verbose  Increase verbosity.
   --debug        Enter pdb on excpetions. Implies --verbose.
 ```
 

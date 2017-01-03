@@ -19,6 +19,7 @@ pluggy==0.4.0             # via tox
 py==1.4.32                # via pytest, tox
 pycodestyle==2.2.0        # via flake8
 pyflakes==1.3.0           # via flake8
+pyperclip==1.5.27
 pytest-watch==4.1.0
 pytest==3.0.5
 pyyaml==3.12              # via watchdog

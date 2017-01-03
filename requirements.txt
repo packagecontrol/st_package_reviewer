@@ -5,6 +5,7 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 github3.py==1.0.0a4
+pyperclip==1.5.27
 requests==2.12.4          # via github3.py
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py

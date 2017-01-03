@@ -41,9 +41,10 @@ def _prepare_nargs(nargs):
 def main():
     parser = argparse.ArgumentParser(prog="python -m {}".format(__package__),
                                      description="Check a Sublime Text package for common errors.")
-    # TODO support multiple args and run checkers on each
     parser.add_argument("nargs", nargs='+', metavar="path_or_URL",
                         help="URL to the repository or path to the package to be checked.")
+    parser.add_argument("--clip", action='store_true',
+                        help="Copy report to clipboard.")
     parser.add_argument("--repo-only", action='store_true',
                         help="Do not check the package itself and only its repository.")
     parser.add_argument("-v", "--verbose", action='store_true',
@@ -120,6 +121,10 @@ def main():
 
     report = out.getvalue()
     print(report, end='')
+
+    if args.clip:
+        import pyperclip
+        pyperclip.copy(report)
 
     return exit_code
 
