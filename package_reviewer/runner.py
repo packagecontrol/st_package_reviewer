@@ -34,25 +34,25 @@ class CheckRunner:
             raise RuntimeError("Check has not been perfomed yet")
         return not bool(self.failures)
 
-    def report(self, file_=None):
+    def report(self, file=None):
         if not self._checked:
             raise RuntimeError("Check has not been perfomed yet")
-        if file_ is None:
-            file_ = sys.stdout
+        if file is None:
+            file = sys.stdout
 
         if self.failures:
-            print("Reporting {} failures:".format(len(self.failures)), file=file_)
+            print("Reporting {} failures:".format(len(self.failures)), file=file)
         else:
-            print("No failures", file=file_)
+            print("No failures", file=file)
         for failure in self.failures:
-            failure.report()
+            failure.report(file=file)
 
-        print(file=file_)
+        print(file=file)
 
         if self.warnings:
-            print("Reporting {} warnings:".format(len(self.warnings)), file=file_)
+            print("Reporting {} warnings:".format(len(self.warnings)), file=file)
         else:
-            print("No warnings", file=file_)
+            print("No warnings", file=file)
 
         for warning in self.warnings:
-            warning.report()
+            warning.report(file=file)
