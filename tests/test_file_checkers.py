@@ -19,7 +19,7 @@ def _collect_test_packages():
 test_packages = list(_collect_test_packages())
 
 
-@pytest.fixture(scope='function', params=test_packages)
+@pytest.fixture(scope='function', params=test_packages, ids=[p.name for p in test_packages])
 def package_path(request):
     """Path to a package to be tested."""
     return request.param
