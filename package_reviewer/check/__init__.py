@@ -50,19 +50,6 @@ class Checker(metaclass=abc.ABCMeta):
             raise RuntimeError("Check has not been perfomed yet")
         return not bool(self.failures)
 
-    def _report(self):
-        # This is a very basic report procedure and only for debugging
-        if not self._checked:
-            raise RuntimeError("Check has not been perfomed yet")
-
-        import pprint
-        if self.warnings:
-            pprint.pprint(self.warnings)
-        if self.failures:
-            pprint.pprint(self.failures)
-
-        return self.result()
-
     @abc.abstractmethod
     def check(self):
         pass
