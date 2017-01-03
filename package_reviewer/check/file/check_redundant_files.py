@@ -24,3 +24,15 @@ class CheckPycFiles(FileChecker):
             if path.with_suffix(".py").is_file():
                 with self.file_context(path):
                     self.fail("'.pyc' file is redundant because its corresponding .py file exists")
+
+
+class CheckCacheFiles(FileChecker):
+
+    def check(self):
+        cache_files = self.glob("**/*.cache")
+        if not cache_files:
+            return
+
+        for path in cache_files:
+            with self.file_context(path):
+                self.fail("'.cache' file is redundant and created by ST automatically")
