@@ -114,12 +114,15 @@ def test_reviewer_integration(package_path, check_runner):
     assert assert_none or (failures or warnings), \
         "No asserts found for package but there were reports"
 
-    if all_failure_asserts or assert_none:
-        assert failures == all_failure_asserts
-    elif failures:
-        assert failures >= failure_asserts
+    if assert_none:
+        assert not failures and not warnings
+    else:
+        if all_failure_asserts:
+            assert failures == all_failure_asserts
+        elif failure_asserts:
+            assert failures >= failure_asserts
 
-    if all_warning_asserts or assert_none:
-        assert warnings == all_warning_asserts
-    elif warnings:
-        assert warnings >= warning_asserts
+        if all_warning_asserts:
+            assert warnings == all_warning_asserts
+        elif warning_asserts:
+            assert warnings >= warning_asserts
