@@ -1,6 +1,7 @@
 import json
 import plistlib
 import xml.etree.ElementTree as ET
+from xml.parsers.expat import ExpatError
 
 from . import FileChecker
 import jsonc
@@ -46,7 +47,7 @@ class CheckPlistFiles(FileChecker):
                 with file_path.open('rb') as f:
                     try:
                         plistlib.load(f)
-                    except ValueError as e:
+                    except (ValueError, ExpatError) as e:
                         self.fail("Invalid Plist", exception=e)
 
 
