@@ -1,4 +1,5 @@
 import logging
+import sys
 
 l = logging.getLogger(__name__)
 
@@ -33,23 +34,25 @@ class CheckRunner:
             raise RuntimeError("Check has not been perfomed yet")
         return not bool(self.failures)
 
-    def report(self):
+    def report(self, file_=None):
         if not self._checked:
             raise RuntimeError("Check has not been perfomed yet")
+        if file_ is None:
+            file_ = sys.stdout
 
-        print()
         if self.failures:
-            print("Reporting {} failures:".format(len(self.failures)))
+            print("Reporting {} failures:".format(len(self.failures)), file=file_)
         else:
-            print("No failures")
+            print("No failures", file=file_)
         for failure in self.failures:
             failure.report()
 
-        print()
+        print(file=file_)
+
         if self.warnings:
-            print("Reporting {} warnings:".format(len(self.warnings)))
+            print("Reporting {} warnings:".format(len(self.warnings)), file=file_)
         else:
-            print("No warnings")
+            print("No warnings", file=file_)
 
         for warning in self.warnings:
             warning.report()

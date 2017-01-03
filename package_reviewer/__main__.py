@@ -111,6 +111,7 @@ def main():
 def _run_checks(checkers, args=[], kwargs={}):
     runner = CheckRunner(checkers)
     runner.run(*args, **kwargs)
+    print()
     runner.report()
     print()
     return runner.result()
