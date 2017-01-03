@@ -13,3 +13,5 @@ exclude_lines =
     # Have to re-enable the standard pragma
     pragma: no cover
     @(abc\.)?abstractmethod
+    if debug_active\(\):
+    if __name__ == ['"]__main__['"]:
