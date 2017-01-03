@@ -10,7 +10,7 @@ class CheckNoSublimePackage(FileChecker):
 
         potential_invokers = self.globs("*.py", "**/*.sublime-build")
         if next(potential_invokers, None) is None:
-            self.fail("'.no-sublime-package' is defined, "
+            self.warn("'.no-sublime-package' is defined, "
                       "but no other resource file can make use of it")
         else:
             self.warn("'.no-sublime-package' is defined. "
