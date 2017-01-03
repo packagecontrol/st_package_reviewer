@@ -111,9 +111,6 @@ def test_reviewer_integration(package_path, check_runner):
                 for warning in check_runner.warnings}
     assert len(warnings) == len(check_runner.warnings), "TODO: Revisit tests"
 
-    assert assert_none or (failures or warnings), \
-        "No asserts found for package but there were reports"
-
     if assert_none:
         assert not failures and not warnings
     else:
