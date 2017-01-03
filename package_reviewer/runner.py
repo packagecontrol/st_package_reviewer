@@ -53,5 +53,3 @@ class CheckRunner:
 
         for warning in self.warnings:
             warning.report()
-
-        return not bool(self.failures)

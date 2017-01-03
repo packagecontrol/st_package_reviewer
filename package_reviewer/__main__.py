@@ -111,9 +111,9 @@ def main():
 def _run_checks(checkers, args=[], kwargs={}):
     runner = CheckRunner(checkers)
     runner.run(*args, **kwargs)
-    result = runner.report()
+    runner.report()
     print()
-    return result
+    return runner.result()
 
 
 if __name__ == '__main__':
