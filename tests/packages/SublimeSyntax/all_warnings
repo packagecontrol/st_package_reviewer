@@ -1,0 +1,2 @@
+- '.sublime-syntax' support has been added in build 3092 and there is no '.tmLanguage' fallback file
+    File: Another Syntax.sublime-syntax
