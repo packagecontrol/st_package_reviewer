@@ -6,7 +6,7 @@ from . import FileChecker
 import jsonc
 
 
-class CheckJSONCFiles(FileChecker):
+class CheckJsoncFiles(FileChecker):
 
     def check(self):
         # All these files allow comments and trailing commas,

@@ -1,7 +1,7 @@
 from . import FileChecker
 
 
-class CheckMessages(FileChecker):
+class CheckNoSublimePackage(FileChecker):
 
     def check(self):
         exists = self.sub_path(".no-sublime-package").is_file()
