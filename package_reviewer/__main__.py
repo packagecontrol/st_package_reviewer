@@ -1,4 +1,5 @@
 import argparse
+import io
 import logging
 from pathlib import Path
 import re
@@ -70,22 +71,29 @@ def main():
     gh = GitHub()
     exit_code = 0
 
+    out = io.StringIO()
     with tempfile.TemporaryDirectory(prefix="pkg-rev_") as tmpdir_s:
         tmpdir = Path(tmpdir_s)
 
         for arg, orig_arg in zip(nargs, args.nargs):
             if not isinstance(arg, Path):
-                l.info("Repository URL: %s", orig_arg)
+                repo_location, url = arg, orig_arg
+                _report_for(repo_location[1], out)
 
-                l.debug("Fetching repository information for %s", arg)
-                repo = gh.repository(*arg)
+                l.info("Repository URL: %s", url)
+                print("- Repository checks -", file=out)
+                print(file=out)
+
+                l.debug("Fetching repository information for %s", repo_location)
+                repo = gh.repository(*repo_location)
                 l.debug("Github rate limit remaining: %s", repo.ratelimit_remaining)
                 if not repo:
-                    l.error("'%s' does not point to a public repository\n", orig_arg)
+                    l.error("'%s' does not point to a public repository\n", url)
                     continue
 
-                if not _run_checks(repo_c.get_checkers(), [repo]):
+                if not _run_checks(repo_c.get_checkers(), out, [repo]):
                     exit_code &= 2
+                print(file=out)
 
                 if args.repo_only:
                     l.info("Skipping package download due to --repo-only option")
@@ -96,24 +104,36 @@ def main():
 
                 path = repo_tools.download(repo, ref, tmpdir)
                 if path is None:
-                    l.error("Downloading %s failed; skipping package checks...", orig_arg)
+                    l.error("Downloading %s failed; skipping package checks...", url)
                     continue
+
+                print("- Package checks -", file=out)
+                print(file=out)
+
             else:
                 path = arg
+                _report_for(path.name, out)
                 l.info("Package path: %s", path)
 
-            if not _run_checks(file_c.get_checkers(), [path]):
+            if not _run_checks(file_c.get_checkers(), out, [path]):
                 exit_code &= 1
+
+    report = out.getvalue()
+    print(report, end='')
 
     return exit_code
 
 
-def _run_checks(checkers, args=[], kwargs={}):
+def _report_for(name, file):
+    print(file=file)
+    print("--", "Report for", name, "-" * (40 - len(name)), file=file)
+    print(file=file)
+
+
+def _run_checks(checkers, file, args=[], kwargs={}):
     runner = CheckRunner(checkers)
     runner.run(*args, **kwargs)
-    print()
-    runner.report()
-    print()
+    runner.report(file=file)
     return runner.result()
 
 
