@@ -104,10 +104,10 @@ def test_reviewer_integration(package_path, check_runner):
     assert_none = not (failure_asserts or all_failure_asserts
                        or warning_asserts or all_warning_asserts)
 
-    failures = {CheckAssert(failure.message, failure.to_details())
+    failures = {CheckAssert(failure.message, failure.details)
                 for failure in check_runner.failures}
     assert len(failures) == len(check_runner.failures), "TODO: Revisit tests"
-    warnings = {CheckAssert(warning.message, warning.to_details())
+    warnings = {CheckAssert(warning.message, warning.details)
                 for warning in check_runner.warnings}
     assert len(warnings) == len(check_runner.warnings), "TODO: Revisit tests"
 
