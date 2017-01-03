@@ -119,6 +119,9 @@ def main():
             if not _run_checks(file_c.get_checkers(), out, [path]):
                 exit_code &= 1
 
+    print(file=out)
+    print("For more details on the report messages (for example how to resolve them), go to:\n"
+          "https://github.com/packagecontrol/package_reviewer/wiki", file=out)
     report = out.getvalue()
     print(report, end='')
 
