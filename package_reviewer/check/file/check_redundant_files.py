@@ -36,3 +36,15 @@ class CheckCacheFiles(FileChecker):
         for path in cache_files:
             with self.file_context(path):
                 self.fail("'.cache' file is redundant and created by ST automatically")
+
+
+class CheckSublimePackageFiles(FileChecker):
+
+    def check(self):
+        cache_files = self.glob("**/*.sublime-package")
+        if not cache_files:
+            return
+
+        for path in cache_files:
+            with self.file_context(path):
+                self.fail("'.sublime-package' files have no business being inside a package")

@@ -1,0 +1,2 @@
+- '.sublime-package' files have no business being inside a package
+    File: Package.sublime-package
