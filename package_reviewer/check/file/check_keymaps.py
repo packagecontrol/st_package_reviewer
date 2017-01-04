@@ -58,7 +58,7 @@ class CheckKeymaps(FileChecker):
 
                     # import pdb; pdb.set_trace()
                 for conflict in conflicts:
-                    if 'context' in conflict:
+                    if conflict.get('context'):
                         self.warn("The binding {} is also defined in default bindings "
                                   "but is masked with a 'context'".format(conflict['keys']))
                     else:
@@ -202,6 +202,7 @@ class KeyMapping:
                     "browser_search", "browser_favorites", "browser_home",
                     "clear", "sysreq",
                     # these have single-character equivalents
+                    # TODO resolve these aliases
                     "plus", "minus", "equals", "forward_slash", "backquote",
                     # Note: this list is incomplete and sourced from the default bindings
                     }
