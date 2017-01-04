@@ -48,3 +48,16 @@ class CheckSublimePackageFiles(FileChecker):
         for path in cache_files:
             with self.file_context(path):
                 self.fail("'.sublime-package' files have no business being inside a package")
+
+
+class CheckSublimeWorkspaceFiles(FileChecker):
+
+    def check(self):
+        cache_files = self.glob("**/*.sublime-workspace")
+        if not cache_files:
+            return
+
+        for path in cache_files:
+            with self.file_context(path):
+                self.fail("'.sublime-workspace' files contain session data and should never be "
+                          "submitted to version control")
