@@ -66,7 +66,11 @@ def download(repo, ref, dirpath):
 
         l.debug("Extracting to '%s'...", dirpath)
         zipf = zipfile.ZipFile(f)  # tarf = tarfile.TarFile(fileobj=f)
-        zipf.extractall(path=str(dirpath))
+        try:
+            zipf.extractall(path=str(dirpath))
+        except Exception:
+            l.exception("Couldn't extract zipfile contents")
+            return None
 
         # Because all archives from github are nested another level,
         # we need to find out what the name of that folder is.
