@@ -15,6 +15,7 @@ class CheckJsoncFiles(FileChecker):
         jsonc_file_globs = {
             "**/*.sublime-build",
             "**/*.sublime-commands",
+            "**/*.sublime-completions",
             "**/*.sublime-keymap",
             "**/*.sublime-macro",
             "**/*.sublime-menu",

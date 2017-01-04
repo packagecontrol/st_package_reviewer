@@ -29,6 +29,7 @@ class CheckHasResourceFiles(FileChecker):
             "*.py",
             "**/*.sublime-build",
             "**/*.sublime-commands",
+            "**/*.sublime-completions",
             "**/*.sublime-keymap",
             "**/*.sublime-macro",  # almost useless without other files
             "**/*.sublime-menu",
