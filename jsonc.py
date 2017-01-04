@@ -22,7 +22,7 @@ _re_js_comments_str = r"""
             \n                          # Newline
         )+                          # Repeat
     )|
-    (/\* (?:[^*]|\*[^/])* \*/)      # Multi-line comment
+    (/\* (?:[^*]|\*(?!/))* \*/)      # Multi-line comment
     |
     (?://(.*)$)                     # Comment
 """
