@@ -96,8 +96,9 @@ def main():
             _report_for(repo_location[1], out)
 
             l.info("Repository URL: %s", url)
-            print("- Repository checks -", file=out)
-            print(file=out)
+            if not args.repo_only:
+                print("### Repository checks ###", file=out)
+                print(file=out)
 
             l.debug("Fetching repository information for %s", repo_location)
             repo = gh.repository(*repo_location)
@@ -122,7 +123,7 @@ def main():
                 l.error("Downloading %s failed; skipping package checks...", url)
                 return exit_code
 
-            print("- Package checks -", file=out)
+            print("### Package checks ###", file=out)
             print(file=out)
 
         else:
@@ -179,7 +180,7 @@ def main():
 
 def _report_for(name, file):
     print(file=file)
-    print("--", "Report for", name, "-" * (40 - len(name)), file=file)
+    print("##", "Report for", name, "#" * (40 - len(name)), file=file)
     print(file=file)
 
 
