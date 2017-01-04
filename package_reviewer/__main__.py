@@ -158,7 +158,9 @@ def main():
                     orig_arg = input("path/url> ")
                 except (EOFError, KeyboardInterrupt):
                     return 0
-
+                if not orig_arg or orig_arg == '\x16':
+                    # '\x16' is produced when pressing ctrl+v on windows
+                    continue
                 arg = _prepare_nargs([orig_arg])
                 if arg is None:
                     continue
