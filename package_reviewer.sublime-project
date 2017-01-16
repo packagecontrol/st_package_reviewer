@@ -1,11 +1,14 @@
 {
-	"folders":
-	[
-		{
-			"path": ".",
+    "folders":
+    [
+        {
+            "path": ".",
             "folder_exclude_patterns": [".*", "htmlcov", "venv"]
-		}
-	],
+        },
+        {
+            "path": "../package_reviewer.wiki"
+        }
+    ],
     "settings": {
         "rulers": [99]
     },
