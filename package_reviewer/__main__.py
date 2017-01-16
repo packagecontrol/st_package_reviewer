@@ -52,7 +52,8 @@ def main():
     parser = argparse.ArgumentParser(prog="python -m {}".format(__package__),
                                      description="Check a Sublime Text package for common errors.")
     parser.add_argument("-i", "--interactive", action='store_true',
-                        help="Start interactive mode. '-i' and 'nargs' are exclusive.")
+                        help="Start interactive mode. '-i' and 'nargs' are exclusive. "
+                        "Type 'clip' to copy the last report to the clipboard.")
     parser.add_argument("nargs", nargs='*', metavar="path_or_URL",
                         help="URL to the repository or path to the package to be checked.")
     parser.add_argument("--clip", action='store_true',
@@ -144,30 +145,36 @@ def main():
         report = out.getvalue()
         print(report, end='')
 
-        if args.clip:
-            import pyperclip
-            pyperclip.copy(report)
-
         out.close()
+        return report
 
     with tempfile.TemporaryDirectory(prefix="pkg-rev_") as tmpdir_s:
         tmpdir = Path(tmpdir_s)
 
         if args.interactive:
+            last_report = None
             while True:
                 try:
                     orig_arg = input("path/url> ")
                 except (EOFError, KeyboardInterrupt):
                     return 0
+
                 if not orig_arg or orig_arg == '\x16':
                     # '\x16' is produced when pressing ctrl+v on windows
                     continue
+                elif orig_arg == "clip":
+                    if last_report:
+                        clip(last_report)
+                    else:
+                        print("Nothing to copy")
+                    continue
+
                 arg = _prepare_nargs([orig_arg])
                 if arg is None:
                     continue
                 else:
                     _process_arg(arg[0], orig_arg)
-                    _finalize_report()
+                    last_report = _finalize_report()
                     out = io.StringIO()
         else:
             exit_code = 0
@@ -175,7 +182,15 @@ def main():
                 exit_code &= _process_arg(arg, orig_arg)
 
             _finalize_report()
+            if args.clip:
+                clip(report)
+
             return exit_code
+
+def clip(text):
+    import pyperclip
+    pyperclip.copy(text)
+    print("Report copied to clipboard")
 
 
 def _report_for(name, file):
