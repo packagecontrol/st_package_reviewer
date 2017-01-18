@@ -71,8 +71,12 @@ def main():
         args.verbose = True
         set_debug(True)
     if args.nargs and args.interactive:
-        print("error: '-i' and 'nargs' are exclusive.")
         parser.print_usage()
+        print("error: '-i' and 'nargs' are exclusive.")
+        return -1
+    elif not (args.nargs or args.interactive):
+        parser.print_usage()
+        print("error: either '-i' or 'nargs' are required.")
         return -1
 
     # configure logging
