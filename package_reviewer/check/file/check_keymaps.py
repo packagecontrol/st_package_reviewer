@@ -164,6 +164,8 @@ class KeyMapping:
 
                 if key == "option":
                     key = "alt"
+                elif key == "command":
+                    key = "super"
                 if key not in modifiers:
                     raise KeyMappingError("Invalid modifier key '{}'".format(key))
 
