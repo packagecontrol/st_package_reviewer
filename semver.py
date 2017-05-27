@@ -138,7 +138,7 @@ class SemVer(namedtuple("_SemVer", 'major, minor, patch, prerelease, build')):
              ))?
     '''
     _search_regex = re.compile(_base_regex)
-    _match_regex  = re.compile('^%s$' % _base_regex)  # required because of $ anchor
+    _match_regex  = re.compile('%s$' % _base_regex)  # required because of $ anchor
 
     # "Constructor"
     def __new__(cls, *args, **kwargs):
