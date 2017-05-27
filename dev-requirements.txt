@@ -5,28 +5,32 @@
 #    pip-compile --output-file dev-requirements.txt dev-requirements.in
 #
 argh==0.26.2              # via watchdog
-click==6.6                # via pip-tools
-colorama==0.3.7           # via pytest, pytest-watch
-coverage==4.2
+certifi==2017.4.17        # via requests
+chardet==3.0.3            # via requests
+click==6.7                # via pip-tools
+colorama==0.3.9           # via pytest-watch
+coverage==4.4.1
 docopt==0.6.2             # via pytest-watch
 first==2.0.1              # via pip-tools
-flake8==3.2.1
+flake8==3.3.0
 github3.py==1.0.0a4
-mccabe==0.5.3             # via flake8
+idna==2.5                 # via requests
+mccabe==0.6.1             # via flake8
 pathtools==0.1.2          # via watchdog
-pip-tools==1.8.0
+pip-tools==1.9.0
 pluggy==0.4.0             # via tox
-py==1.4.32                # via pytest, tox
-pycodestyle==2.2.0        # via flake8
-pyflakes==1.3.0           # via flake8
+py==1.4.33                # via pytest, tox
+pycodestyle==2.3.1        # via flake8
+pyflakes==1.5.0           # via flake8
 pyperclip==1.5.27
 pytest-watch==4.1.0
-pytest==3.0.5
+pytest==3.1.0
 pyyaml==3.12              # via watchdog
-requests==2.12.4          # via github3.py
+requests==2.16.2          # via github3.py
 six==1.10.0               # via pip-tools
-tox==2.5.0
+tox==2.7.0
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
+urllib3==1.21.1           # via requests
 virtualenv==15.1.0        # via tox
 watchdog==0.8.3           # via pytest-watch
