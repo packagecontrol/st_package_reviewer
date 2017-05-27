@@ -45,10 +45,14 @@ def main():
         0: No errors
         -1: Invalid command line arguments
 
-    Non-interactive mode (a combination of bitflags):
+    Additional return values in non-interactive mode (a combination of bit flags):
         1: Package check finished with failures
         2: Repository check finished with failures
         4: Unable to download repository
+
+    Interactive mode:
+        Enter package paths or repository URLS continuously.
+        Type `c` to copy the last report to your clipboard.
     """
 
     parser = argparse.ArgumentParser(prog="python -m {}".format(__package__),
@@ -169,7 +173,7 @@ def main():
                 if not orig_arg or orig_arg == '\x16':
                     # '\x16' is produced when pressing ctrl+v on windows
                     continue
-                elif orig_arg == "clip":
+                elif orig_arg == "c":
                     if last_report:
                         clip(last_report)
                     else:
