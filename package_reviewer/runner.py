@@ -6,8 +6,9 @@ l = logging.getLogger(__name__)
 
 class CheckRunner:
 
-    def __init__(self, checkers):
+    def __init__(self, checkers, fail_on_warnings=False):
         self.checkers = checkers
+        self.fail_on_warnings = fail_on_warnings
         self.failures = []
         self.warnings = []
         self._checked = False
@@ -32,7 +33,10 @@ class CheckRunner:
         """Return whether checks ran without issues (`True`) or there were failures (`False`)."""
         if not self._checked:
             raise RuntimeError("Check has not been perfomed yet")
-        return not bool(self.failures)
+        success = not bool(self.failures)
+        if self.fail_on_warnings:
+            success &= not bool(self.warnings)
+        return success
 
     def report(self, file=None):
         if not self._checked:
