@@ -45,10 +45,10 @@ def main():
         0: No errors
         -1: Invalid command line arguments
 
-    Non-interactive mode:
+    Non-interactive mode (a combination of bitflags):
         1: Package check finished with failures
         2: Repository check finished with failures
-        3: Both finished with failures
+        4: Unable to download repository
     """
 
     parser = argparse.ArgumentParser(prog="python -m {}".format(__package__),
@@ -101,11 +101,19 @@ def main():
                 print(file=out)
 
             l.debug("Fetching repository information for %s", repo_location)
-            repo = gh.repository(*repo_location)
-            l.debug("Github rate limit remaining: %s", repo.ratelimit_remaining)
+            try:
+                repo = gh.repository(*repo_location)
+                l.debug("Github rate limit remaining: %s", repo.ratelimit_remaining)
+            except Exception as e:
+                import traceback
+                traceback.print_exc()
+                print("Unable to download repository; {} {}".format(url, e.__name__, e),
+                      file=out)
+                return 4
+
             if not repo:
-                l.error("'%s' does not point to a public repository\n", url)
-                return
+                print("{!r} does not point to a (public) repository".format(url), file=out)
+                return 4
 
             if not _run_checks(repo_c.get_checkers(), out, [repo]):
                 exit_code = 2
