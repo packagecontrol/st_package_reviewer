@@ -19,3 +19,5 @@
     File: Default (OSX).sublime-keymap
 - The binding ['super+alt+up'] unconditionally overrides a default binding
     File: Default (OSX).sublime-keymap
+- The binding ['super+alt+s'] unconditionally overrides a default binding
+    File: Default (OSX).sublime-keymap

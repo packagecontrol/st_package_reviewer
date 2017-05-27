@@ -1,4 +1,5 @@
 [
   { "keys": ["super+alt+v"], "command": "hi" },  // default has "super+option+v"
-  { "keys": ["option+super+up"], "command": "hi" }  // default has "super+alt+up"
+  { "keys": ["option+super+up"], "command": "hi" },  // default has "super+alt+up"
+  { "keys": ["command+alt+s"], "command": "hi" }  // default has "super+alt+s"
 ]
