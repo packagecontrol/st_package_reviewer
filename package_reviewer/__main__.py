@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 import sys
 import tempfile
+import textwrap
 
 from github3 import GitHub
 
@@ -39,7 +40,8 @@ def _prepare_nargs(nargs):
 
 
 def main():
-    """Return values:
+    """\
+    Return values:
         0: No errors
         -1: Invalid command line arguments
 
@@ -50,12 +52,13 @@ def main():
     """
 
     parser = argparse.ArgumentParser(prog="python -m {}".format(__package__),
-                                     description="Check a Sublime Text package for common errors.")
-    parser.add_argument("-i", "--interactive", action='store_true',
-                        help="Start interactive mode. '-i' and 'nargs' are exclusive. "
-                        "Type 'clip' to copy the last report to the clipboard.")
+                                     description="Check a Sublime Text package for common errors.",
+                                     epilog=textwrap.dedent(main.__doc__),
+                                     formatter_class=argparse.RawTextHelpFormatter)
+
     parser.add_argument("nargs", nargs='*', metavar="path_or_URL",
-                        help="URL to the repository or path to the package to be checked.")
+                        help="URL to the repository or path to the package to be checked."
+                             " If not provided, runs in interactive mode.")
     parser.add_argument("--clip", action='store_true',
                         help="Copy report to clipboard.")
     parser.add_argument("--repo-only", action='store_true',
@@ -70,14 +73,6 @@ def main():
     if args.debug:
         args.verbose = True
         set_debug(True)
-    if args.nargs and args.interactive:
-        parser.print_usage()
-        print("error: '-i' and 'nargs' are exclusive.")
-        return -1
-    elif not (args.nargs or args.interactive):
-        parser.print_usage()
-        print("error: either '-i' or 'nargs' are required.")
-        return -1
 
     # configure logging
     l.addHandler(logging.StreamHandler())
@@ -155,7 +150,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="pkg-rev_") as tmpdir_s:
         tmpdir = Path(tmpdir_s)
 
-        if args.interactive:
+        if not nargs:
             last_report = None
             while True:
                 try:
@@ -190,6 +185,7 @@ def main():
                 clip(report)
 
             return exit_code
+
 
 def clip(text):
     import pyperclip
