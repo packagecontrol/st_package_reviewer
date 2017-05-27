@@ -66,7 +66,7 @@ def main():
     parser.add_argument("-v", "--verbose", action='store_true',
                         help="Increase verbosity.")
     parser.add_argument("--debug", action='store_true',
-                        help="Enter pdb on excpetions. Implies --verbose.")
+                        help="Enter pdb on exceptions. Implies --verbose.")
     args = parser.parse_args()
 
     # post parsing
@@ -146,8 +146,8 @@ def main():
 
     def _finalize_report():
         print(file=out)
-        print("For more details on the report messages (for example how to resolve them), go to:\n"
-              "https://github.com/packagecontrol/package_reviewer/wiki", file=out)
+        print("For more details on the report messages (for example how to resolve them), go to:"
+              "\nhttps://github.com/packagecontrol/package_reviewer/wiki", file=out)
         print(file=out)
         report = out.getvalue()
         print(report, end='')

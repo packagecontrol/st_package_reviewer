@@ -41,8 +41,6 @@ def config_logging():
 
 config_logging()
 
-# import after logging is configured
-
 
 ##############################################################################
 
