@@ -188,7 +188,7 @@ def main():
             for arg, orig_arg in zip(nargs, args.nargs):
                 exit_code |= _process_arg(arg, orig_arg)
 
-            _finalize_report()
+            report = _finalize_report()
             if args.clip:
                 clip(report)
 
