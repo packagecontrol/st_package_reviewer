@@ -116,7 +116,7 @@ def main():
                 return 4
 
             if not _run_checks(repo_c.get_checkers(), out, [repo]):
-                exit_code = 2
+                exit_code |= 2
             print(file=out)
 
             if args.repo_only:
@@ -140,7 +140,7 @@ def main():
             l.info("Package path: %s", path)
 
         if not _run_checks(file_c.get_checkers(), out, [path]):
-            exit_code = 1
+            exit_code |= 1
 
         return exit_code
 
@@ -186,7 +186,7 @@ def main():
         else:
             exit_code = 0
             for arg, orig_arg in zip(nargs, args.nargs):
-                exit_code &= _process_arg(arg, orig_arg)
+                exit_code |= _process_arg(arg, orig_arg)
 
             _finalize_report()
             if args.clip:
