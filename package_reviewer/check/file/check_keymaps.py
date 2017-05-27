@@ -126,6 +126,7 @@ class KeyMapping:
         self.data = self._load(path)
 
     def find_conflicts(self, other):
+        # TODO two-part bindings conflict with single bindings and vice versa
         return [binding for binding in self.data
                 if other.get_for_chords(binding['keys'])]
 
@@ -156,7 +157,7 @@ class KeyMapping:
                 if not key_chord:  # we're at the end
                     if plus:  # a chord with '+' as key
                         key = plus
-                    if not cls._verify_key(key):
+                    if not cls._key_is_valid(key):
                         raise KeyMappingError("Invalid key '{}'".format(key))
                     chord_parts.sort(key=modifiers.index)
                     chord_parts.append(key)
@@ -166,6 +167,7 @@ class KeyMapping:
                     key = "alt"
                 elif key == "command":
                     key = "super"
+                # TODO "primary"
                 if key not in modifiers:
                     raise KeyMappingError("Invalid modifier key '{}'".format(key))
 
@@ -178,11 +180,10 @@ class KeyMapping:
         return norm_chords
 
     @classmethod
-    def _verify_key(cls, key):
+    def _key_is_valid(cls, key):
         if len(key) == 1:
             # should include all typable symbols and more
-            # TODO what about uppercase letters?
-            return True
+            return not key.isupper()  # not equivalent to `key.islower()`
         elif key in cls._known_keys:
             # multi-character key aliases
             return True
