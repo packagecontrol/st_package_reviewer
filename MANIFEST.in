@@ -1,0 +1,6 @@
+# The license
+include LICENSE
+
+# Sourced in setup.py code:
+include README.md
+include requirements.in

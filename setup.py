@@ -53,7 +53,7 @@ setup(
     install_requires=read("requirements.in").splitlines(),
     package_data={
         # `data` directory contains reference .sublime-keymap files
-        "package_reviewer": ["data/*"],
+        "package_reviewer": ["data/*", "README*"],
     },
     entry_points={
         'console_scripts': [
