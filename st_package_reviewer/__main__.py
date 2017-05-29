@@ -9,7 +9,7 @@ import textwrap
 
 from github3 import GitHub
 
-from . import set_debug, debug_active
+from . import set_debug, debug_active, __version__
 from . import repo_tools
 from .runner import CheckRunner
 from .check import file as file_c, repo as repo_c
@@ -59,6 +59,8 @@ def main():
                                      description="Check a Sublime Text package for common errors.",
                                      epilog=textwrap.dedent(main.__doc__),
                                      formatter_class=argparse.RawTextHelpFormatter)
+
+    parser.add_argument('--version', action='version', version='%(prog)s ' + __version__)
 
     parser.add_argument("nargs", nargs='*', metavar="path_or_URL",
                         help="URL to the repository or path to the package to be checked."

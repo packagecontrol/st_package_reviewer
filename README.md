@@ -32,7 +32,8 @@ $ pip install st-package-reviewer
 ## Usage
 
 ```
-usage: st_package_reviewer [-h] [--clip] [--repo-only] [-w] [-v] [--debug]
+usage: st_package_reviewer [-h] [--version] [--clip] [--repo-only] [-w] [-v]
+                           [--debug]
                            [path_or_URL [path_or_URL ...]]
 
 Check a Sublime Text package for common errors.
@@ -42,6 +43,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  --version             show program's version number and exit
   --clip                Copy report to clipboard.
   --repo-only           Do not check the package itself and only its repository.
   -w, --fail-on-warnings
@@ -61,7 +63,6 @@ Additional return values in non-interactive mode (a combination of bit flags):
 Interactive mode:
     Enter package paths or repository URLS continuously.
     Type `c` to copy the last report to your clipboard.
-
 ```
 
 
