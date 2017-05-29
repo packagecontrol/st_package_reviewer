@@ -1,0 +1,22 @@
+language: python
+
+matrix:
+  include:
+  - python: "3.4"
+    env: TOXENV=py34
+  - python: "3.5"
+    env: TOXENV=py35
+  - python: "3.6"
+    env: TOXENV=py36
+  - python: "3.6"
+    env: TOXENV=flake8
+
+install:
+  - pip install tox
+  - '[[ $TOXENV == *py* ]] && pip install coveralls'
+
+script:
+  - tox
+
+after_success:
+  - '[[ $TOXENV == *py* ]] && coveralls'
