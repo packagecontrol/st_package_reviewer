@@ -13,10 +13,10 @@ matrix:
 
 install:
   - pip install tox
-  - '[[ $TOXENV == *py* ]] && pip install coveralls'
+  - '[[ $TOXENV == *py* ]] && pip install coveralls || true'
 
 script:
   - tox
 
 after_success:
-  - '[[ $TOXENV == *py* ]] && coveralls'
+  - '[[ $TOXENV == *py* ]] && coveralls || true'
