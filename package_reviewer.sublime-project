@@ -3,7 +3,8 @@
     [
         {
             "path": ".",
-            "folder_exclude_patterns": [".*", "htmlcov", "venv"]
+            "folder_exclude_patterns": [".*", "htmlcov", "venv"],
+            "file_exclude_patterns": [".coverage"]
         },
         {
             "path": "../package_reviewer.wiki"
@@ -15,9 +16,9 @@
     "build_systems": [
         {
             "name": "Run tests",
-            "shell_cmd": "pytest",
+            "shell_cmd": "tox",
             "working_dir": "${project_path}",
-            "file_regex": "^(.*?):(\\d+):() (.*?)"
+            "file_regex": "^(.*?):(\\d+):() (.*)"
         }
     ]
 }
