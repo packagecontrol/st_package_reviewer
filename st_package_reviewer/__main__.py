@@ -55,7 +55,7 @@ def main():
         Type `c` to copy the last report to your clipboard.
     """
 
-    parser = argparse.ArgumentParser(prog="python -m {}".format(__package__),
+    parser = argparse.ArgumentParser(prog=__package__,
                                      description="Check a Sublime Text package for common errors.",
                                      epilog=textwrap.dedent(main.__doc__),
                                      formatter_class=argparse.RawTextHelpFormatter)
