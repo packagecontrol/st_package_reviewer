@@ -23,7 +23,7 @@ class CheckMessages(FileChecker):
             with msg_path.open() as f:
                 try:
                     data = json.load(f)
-                except json.JSONDecodeError as e:
+                except ValueError as e:
                     self.fail("unable to load `messages.json`", exception=e)
                     return
 

@@ -1,4 +1,3 @@
-import json
 import plistlib
 import xml.etree.ElementTree as ET
 from xml.parsers.expat import ExpatError
@@ -29,7 +28,7 @@ class CheckJsoncFiles(FileChecker):
                 with file_path.open(encoding='utf-8') as f:
                     try:
                         jsonc.loads(f.read())
-                    except json.JSONDecodeError as e:
+                    except ValueError as e:
                         self.fail("Invalid JSON (with comments)", exception=e)
 
 
