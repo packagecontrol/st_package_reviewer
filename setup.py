@@ -48,7 +48,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    keywords=["sublime text", "review", ""],
+    keywords=["sublime text", "review", "reviewer", "package", "package control"],
     install_requires=read("requirements.in").splitlines(),
     package_data={
         # `data` directory contains reference .sublime-keymap files
