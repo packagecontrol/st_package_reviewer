@@ -15,7 +15,7 @@ from .runner import CheckRunner
 from .check import file as file_c, repo as repo_c
 
 
-l = logging.getLogger("package_reviewer")
+l = logging.getLogger(__package__)
 
 
 def _prepare_nargs(nargs):
@@ -155,7 +155,7 @@ def main():
     def _finalize_report():
         print(file=out)
         print("For more details on the report messages (for example how to resolve them), go to:"
-              "\nhttps://github.com/packagecontrol/package_reviewer/wiki", file=out)
+              "\nhttps://github.com/packagecontrol/py_package_reviewer/wiki", file=out)
         print(file=out)
         report = out.getvalue()
         print(report, end='')

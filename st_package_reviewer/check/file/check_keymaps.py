@@ -6,7 +6,7 @@ from pathlib import Path
 from ...lib import jsonc
 from . import FileChecker
 
-from package_reviewer import __file__ as base_init_path
+from ... import __file__ as base_init_path
 
 
 DATA_PATH = Path(base_init_path).parent / "data"

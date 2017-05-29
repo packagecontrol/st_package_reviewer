@@ -27,12 +27,12 @@ def find_version(*path_leaves):
 
 
 setup(
-    name="package_reviewer",
+    name="st_package_reviewer",
     packages=find_packages(exclude=["tests"]),
-    version=find_version("package_reviewer", "__init__.py"),
+    version=find_version("st_package_reviewer", "__init__.py"),
     description="Review Sublime Text packages",
     long_description=read("README.md"),
-    url="https://github.com/packagecontrol/package_reviewer",
+    url="https://github.com/packagecontrol/st_package_reviewer",
     author="FichteFoll",
     author_email="fichtefoll2@googlemail.com",
     license='MIT',
@@ -53,11 +53,11 @@ setup(
     install_requires=read("requirements.in").splitlines(),
     package_data={
         # `data` directory contains reference .sublime-keymap files
-        "package_reviewer": ["data/*", "README*"],
+        "st_package_reviewer": ["data/*", "README*"],
     },
     entry_points={
         'console_scripts': [
-            "package_reviewer=package_reviewer.__main__:main",
+            "st_package_reviewer=st_package_reviewer.__main__:main",
         ],
     },
     zip_safe=False,

@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from package_reviewer.runner import CheckRunner
-from package_reviewer.check import file as file_c
+from st_package_reviewer.runner import CheckRunner
+from st_package_reviewer.check import file as file_c
 
 
 def _collect_test_packages():
@@ -34,7 +34,7 @@ def check_runner():
 
 def config_logging():
     # Ensure we see debug output if tests fail
-    logger = logging.getLogger("package_reviewer")
+    logger = logging.getLogger("st_package_reviewer")
     logger.addHandler(logging.StreamHandler())
     logger.setLevel(logging.DEBUG)
 

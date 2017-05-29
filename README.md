@@ -31,9 +31,9 @@ $ pip install -r requirements.txt
 ## Usage
 
 ```
-usage: python -m package_reviewer [-h] [-i] [--clip] [--repo-only] [-v]
-                                  [--debug]
-                                  [path_or_URL [path_or_URL ...]]
+usage: python -m st_package_reviewer [-h] [-i] [--clip] [--repo-only] [-v]
+                                     [--debug]
+                                     [path_or_URL [path_or_URL ...]]
 
 Check a Sublime Text package for common errors.
 
@@ -55,4 +55,4 @@ reported by the tool,
 refer to the [wiki][].
 
 
-[wiki]: https://github.com/packagecontrol/package_reviewer/wiki
+[wiki]: https://github.com/packagecontrol/st_package_reviewer/wiki
