@@ -5,7 +5,7 @@ import re
 import tempfile
 import zipfile
 
-import semver
+from .lib import semver
 
 
 __all__ = ('tags', 'SemVerTag', 'semver_tags', 'latest_ref', 'download')

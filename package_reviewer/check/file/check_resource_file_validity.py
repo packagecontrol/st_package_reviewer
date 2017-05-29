@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from xml.parsers.expat import ExpatError
 
 from . import FileChecker
-import jsonc
+from ...lib import jsonc
 
 
 class CheckJsoncFiles(FileChecker):

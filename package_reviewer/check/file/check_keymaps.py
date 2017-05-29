@@ -3,7 +3,7 @@ import logging
 import re
 from pathlib import Path
 
-import jsonc
+from ...lib import jsonc
 from . import FileChecker
 
 from package_reviewer import __file__ as base_init_path

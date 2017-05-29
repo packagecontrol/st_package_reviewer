@@ -1,6 +1,6 @@
 import json
 
-from semver import SemVer
+from ...lib.semver import SemVer
 
 from . import FileChecker
 

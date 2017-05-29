@@ -6,7 +6,8 @@
 source =
     package_reviewer
     tests
-# omit =
+omit =
+    package_reviewer/lib/*
 
 [report]
 exclude_lines =
