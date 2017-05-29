@@ -1,4 +1,4 @@
-# package_reviewer
+# st_package_reviewer
 
 A tool to review packages for [Sublime Text 3][]
 (and its package manager [Package Control][]).
