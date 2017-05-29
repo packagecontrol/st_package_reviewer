@@ -35,7 +35,7 @@ class Checker(metaclass=abc.ABCMeta):
     def perform_check(self):
         try:
             self.check()
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             msg = "Unhandled exception in 'check' routine"
             self.fail(msg, exception=e, exc_info=sys.exc_info())
             if debug_active():

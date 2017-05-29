@@ -121,3 +121,6 @@ def test_reviewer_integration(package_path, check_runner):
             assert warnings == all_warning_asserts
         elif warning_asserts:
             assert warnings >= warning_asserts
+
+    if failures:
+        assert not check_runner.result()
