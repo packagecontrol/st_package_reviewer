@@ -1,5 +1,10 @@
 # st_package_reviewer
 
+[![Build Status](https://travis-ci.org/packagecontrol/st_package_reviewer.svg?branch=master)](https://travis-ci.org/packagecontrol/st_package_reviewer)
+[![Coverage Status](https://coveralls.io/repos/github/packagecontrol/st_package_reviewer/badge.svg?branch=master)](https://coveralls.io/github/packagecontrol/st_package_reviewer?branch=master)
+[![PyPI](https://img.shields.io/pypi/v/st-package-reviewer.svg)](https://pypi.python.org/pypi/st-package-reviewer)
+[![Python Versions](https://img.shields.io/pypi/pyversions/st-package-reviewer.svg)](https://pypi.python.org/pypi/st-package-reviewer)
+
 A tool to review packages for [Sublime Text 3][]
 (and its package manager [Package Control][]).
 Supports passing local file paths
