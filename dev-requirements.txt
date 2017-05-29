@@ -18,6 +18,7 @@ idna==2.5                 # via requests
 mccabe==0.6.1             # via flake8
 pathtools==0.1.2          # via watchdog
 pip-tools==1.9.0
+pkginfo==1.4.1            # via twine
 pluggy==0.4.0             # via tox
 py==1.4.33                # via pytest, tox
 pycodestyle==2.3.1        # via flake8
@@ -26,9 +27,12 @@ pyperclip==1.5.27
 pytest-watch==4.1.0
 pytest==3.1.0
 pyyaml==3.12              # via watchdog
-requests==2.16.2          # via github3.py
+requests-toolbelt==0.8.0  # via twine
+requests==2.17.0          # via github3.py, requests-toolbelt, twine
 six==1.10.0               # via pip-tools
 tox==2.7.0
+tqdm==4.14.0              # via twine
+twine==1.9.1
 uritemplate.py==3.0.2     # via github3.py
 uritemplate==3.0.0        # via uritemplate.py
 urllib3==1.21.1           # via requests
