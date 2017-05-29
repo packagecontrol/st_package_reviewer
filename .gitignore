@@ -1,9 +1,13 @@
+# tox/cache
 .tox/
 .cache/
-venv/
-htmlcov/
 **/__pycache__/
+
+# coverage
+htmlcov/
 .coverage
 
-*.sublime-workspace
-!tests/packages/**/*.*
+# setuptools
+build/
+dist/
+*.egg-info/
