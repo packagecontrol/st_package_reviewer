@@ -18,8 +18,7 @@ def read(*path_leaves, **kwargs):
 
 def find_version(*path_leaves):
     version_file = read(*path_leaves)
-    version_match = re.search(r"^__version__ = (['\"])(.*?)\1",
-                              version_file, re.M)
+    version_match = re.search(r"^__version__ = (['\"])(.*?)\1", version_file, re.M)
     if version_match:
         return version_match.group(2)
     else:
