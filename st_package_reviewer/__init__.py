@@ -1,5 +1,4 @@
-"""Review Sublime Text packages.
-"""
+"""Review Sublime Text packages."""
 
 __version__ = "0.2.2"
 

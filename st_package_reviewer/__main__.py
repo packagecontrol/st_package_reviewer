@@ -40,7 +40,8 @@ def _prepare_nargs(nargs):
 
 
 def main():
-    """\
+    """Main.
+
     Return values:
         0: No errors
         -1: Invalid command line arguments
@@ -54,7 +55,6 @@ def main():
         Enter package paths or repository URLS continuously.
         Type `c` to copy the last report to your clipboard.
     """
-
     parser = argparse.ArgumentParser(prog=__package__,
                                      description="Check a Sublime Text package for common errors.",
                                      epilog=textwrap.dedent(main.__doc__),

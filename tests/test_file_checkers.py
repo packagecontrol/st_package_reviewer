@@ -83,7 +83,6 @@ def test_reviewer_integration(package_path, check_runner):
     If all failures or warnings should be compared,
     specify them in "all_failures" and "all_warnings".
     """
-
     # Run checks first and report them to stdout,
     # so we have something to inspect when the test fails.
     check_runner.run(package_path)
@@ -99,8 +98,12 @@ def test_reviewer_integration(package_path, check_runner):
     assert not (warning_asserts and all_warning_asserts), \
         "Only one warnings meta file is allowed"
 
-    assert_none = not (failure_asserts or all_failure_asserts
-                       or warning_asserts or all_warning_asserts)
+    assert_none = not (
+        failure_asserts or
+        all_failure_asserts or
+        warning_asserts or
+        all_warning_asserts
+    )
 
     failures = {CheckAssert(failure.message, failure.details)
                 for failure in check_runner.failures}
