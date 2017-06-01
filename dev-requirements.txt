@@ -12,6 +12,8 @@ colorama==0.3.9           # via pytest-watch
 coverage==4.4.1
 docopt==0.6.2             # via pytest-watch
 first==2.0.1              # via pip-tools
+flake8-docstrings==1.1.0
+flake8-polyfill==1.0.1    # via flake8-docstrings
 flake8==3.3.0
 github3.py==1.0.0a4
 idna==2.5                 # via requests
@@ -22,6 +24,7 @@ pkginfo==1.4.1            # via twine
 pluggy==0.4.0             # via tox
 py==1.4.33                # via pytest, tox
 pycodestyle==2.3.1        # via flake8
+pydocstyle==2.0.0         # via flake8-docstrings
 pyflakes==1.5.0           # via flake8
 pyperclip==1.5.27
 pytest-watch==4.1.0
@@ -29,7 +32,8 @@ pytest==3.1.0
 pyyaml==3.12              # via watchdog
 requests-toolbelt==0.8.0  # via twine
 requests==2.17.0          # via github3.py, requests-toolbelt, twine
-six==1.10.0               # via pip-tools
+six==1.10.0               # via pip-tools, pydocstyle
+snowballstemmer==1.2.1    # via pydocstyle
 tox==2.7.0
 tqdm==4.14.0              # via twine
 twine==1.9.1

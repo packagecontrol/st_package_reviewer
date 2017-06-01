@@ -53,8 +53,7 @@ def main():
     Interactive mode:
         Enter package paths or repository URLS continuously.
         Type `c` to copy the last report to your clipboard.
-    """
-
+    """  # flake8: noqa
     parser = argparse.ArgumentParser(prog=__package__,
                                      description="Check a Sublime Text package for common errors.",
                                      epilog=textwrap.dedent(main.__doc__),

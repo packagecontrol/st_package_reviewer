@@ -83,7 +83,6 @@ def test_reviewer_integration(package_path, check_runner):
     If all failures or warnings should be compared,
     specify them in "all_failures" and "all_warnings".
     """
-
     # Run checks first and report them to stdout,
     # so we have something to inspect when the test fails.
     check_runner.run(package_path)
