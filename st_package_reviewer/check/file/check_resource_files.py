@@ -58,7 +58,10 @@ class CheckHasSublimeSyntax(FileChecker):
         syntax_files = self.glob("**/*.sublime-syntax")
 
         for path in syntax_files:
-            if not path.with_suffix(".tmLanguage").is_file():
+            if (
+                not path.with_suffix(".tmLanguage").is_file() and
+                not path.with_suffix(".hidden-tmLanguage").is_file()
+            ):
                 with self.file_context(path):
                     self.warn("'.sublime-syntax' support has been added in build 3092 and there "
                               "is no '.tmLanguage' fallback file")
