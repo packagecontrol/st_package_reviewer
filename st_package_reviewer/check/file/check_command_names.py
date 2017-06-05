@@ -34,12 +34,6 @@ class CheckCommandNames(FileChecker):
 
     def visit_ClassDef(self, node):
         if not self.is_derived_from_command(node): return
-        # Check if the command is documented.
-        docstring = ast.get_docstring(node)
-        if not docstring:
-            with self.file_context(self.current_file):
-                self.warn("At line {}, column {}, the command {} does not have a docstring."
-                    .format(node.lineno, node.col_offset, node.name))
         # Check if the command has the "Command" suffix.
         if not node.name.endswith("Command"):
             with self.file_context(self.current_file):
