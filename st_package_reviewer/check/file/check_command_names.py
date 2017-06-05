@@ -33,7 +33,8 @@ class CheckCommandNames(FileChecker):
         return False
 
     def visit_ClassDef(self, node):
-        if not self.is_derived_from_command(node): return
+        if not self.is_derived_from_command(node):
+            return
         # Check if the command has the "Command" suffix.
         if not node.name.endswith("Command"):
             with self.file_context(self.current_file):
