@@ -1,5 +1,6 @@
 from . import AstChecker
 
+
 class CheckPlatformUsage(AstChecker):
     """If the plugin uses the platform package and/or sublime.platform(), issue a warning."""
 
@@ -9,15 +10,16 @@ class CheckPlatformUsage(AstChecker):
     def _warn_platform_module_usage(self, node):
         with self.file_context(self.current_file):
             self.warn("At line {}, column {}, consider replacing the platform module by "
-                "using sublime.platform() and sublime.arch() Since it is likely likely that the "
-                "plugin contains platform-dependent code, please make sure you thought about the "
-                "platform key in your pull request.".format(node.lineno, node.col_offset))
+                      "using sublime.platform() and sublime.arch() Since it is likely likely that "
+                      "the plugin contains platform-dependent code, please make sure you thought "
+                      "about the platform key in your pull request."
+                      .format(node.lineno, node.col_offset))
 
     def _warn_sublime_platform_usage(self, node):
         with self.file_context(self.current_file):
             self.warn("It looks like you're using platform-dependent code at line {}, column {}. "
-                "Please make sure you thought about the platform key in your pull request."
-                    .format(node.lineno, node.col_offset))
+                      "Please make sure you thought about the platform key in your pull request."
+                      .format(node.lineno, node.col_offset))
 
     def visit_Import(self, node):
         for alias_node in node.names:
@@ -37,4 +39,3 @@ class CheckPlatformUsage(AstChecker):
             return
         if id == "sublime" and attr in ("platform", "arch"):
             self._warn_sublime_platform_usage(node)
-

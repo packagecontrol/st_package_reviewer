@@ -6,6 +6,7 @@ from st_package_reviewer.check import find_all
 
 __all__ = ('AstChecker', 'get_checkers')
 
+
 class AstChecker(FileChecker, ast.NodeVisitor):
     """Groups checks for python source code."""
 
@@ -21,9 +22,10 @@ class AstChecker(FileChecker, ast.NodeVisitor):
                 except Exception as e:
                     with self.file_context(self.current_file):
                         self.fail("Failed to parse! One possibility is that this is a Python2 "
-                            "file with some Python2 constructs no longer valid in Python3.")
+                                  "file with some Python2 constructs no longer valid in Python3.")
                     continue
             self.visit(root)
+
 
 get_checkers = functools.partial(
     find_all,

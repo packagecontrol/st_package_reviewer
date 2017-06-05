@@ -42,6 +42,7 @@ class FileChecker(Checker):
             pass
         return self.context("File: {}".format(path))
 
+
 get_checkers = functools.partial(
     find_all,
     Path(__file__).parent,
