@@ -15,7 +15,7 @@ class AstChecker(FileChecker, ast.NodeVisitor):
     def visit_all_pyfiles(self):
         pyfiles = self.glob("**/*.py")
         for self.current_file in pyfiles:
-            with open(self.current_file, "r") as f:
+            with self.current_file.open("r") as f:
                 try:
                     root = ast.parse(f.read(), self.current_file)
                 except Exception as e:
