@@ -17,7 +17,6 @@ class CheckCommandNames(FileChecker):
     def is_derived_from_command(self, node):
         interesting = ("TextCommand", "WindowCommand", "ApplicationCommand", "ExecCommand")
         for base in node.bases:
-            # print(ast.dump(base))
             if isinstance(base, ast.Attribute):
                 # something of the form module_name.BaseClassName
                 if isinstance(base.value, ast.Attribute):
