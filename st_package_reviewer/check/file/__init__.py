@@ -1,14 +1,13 @@
 import functools
 import itertools
 from pathlib import Path
-import ast
 
 from .. import Checker, find_all
 
 __all__ = ('FileChecker', 'get_checkers')
 
 
-class FileChecker(Checker, ast.NodeVisitor):
+class FileChecker(Checker):
     """Groups checks for packages' contents.
 
     Also adds utilities for file systems to the Checker class.
@@ -42,19 +41,6 @@ class FileChecker(Checker, ast.NodeVisitor):
         except ValueError:
             pass
         return self.context("File: {}".format(path))
-
-    def visit_all_pyfiles(self):
-        pyfiles = self.glob("**/*.py")
-        for self.current_file in pyfiles:
-            with open(self.current_file, "r") as f:
-                try:
-                    root = ast.parse(f.read(), self.current_file)
-                except Exception as e:
-                    with self.file_context(self.current_file):
-                        self.fail("Failed to parse! One possibility is that this is a Python2 "
-                            "file with some Python2 constructs no longer valid in Python3.")
-                    continue
-            self.visit(root)
 
 get_checkers = functools.partial(
     find_all,

@@ -1,7 +1,6 @@
-from . import FileChecker
-import ast
+from . import AstChecker
 
-class CheckPlatformUsage(FileChecker):
+class CheckPlatformUsage(AstChecker):
     """Checks wether the plugin uses the platform package and warn about it. Suggests to use 
     sublime.platform() and sublime.arch(). If it uses the platform package and/or 
     sublime.platform(), checks if the commit has a platform key. If not, warn about it."""

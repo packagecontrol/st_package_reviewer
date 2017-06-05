@@ -1,7 +1,6 @@
-from . import FileChecker
-import ast
+from . import AstChecker
 
-class CheckOsSytemCalls(FileChecker):
+class CheckOsSytemCalls(AstChecker):
     """Checks for any calls to os.system and suggests to use subprocess.check_call intead."""
 
     def check(self):

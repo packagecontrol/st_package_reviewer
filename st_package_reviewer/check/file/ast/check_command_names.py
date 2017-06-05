@@ -1,8 +1,8 @@
-from . import FileChecker
+from . import AstChecker
 import re
 import ast
 
-class CheckCommandNames(FileChecker):
+class CheckCommandNames(AstChecker):
     """Finds all sublime commands and does various checks on them."""
 
     def check(self):
