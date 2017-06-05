@@ -26,6 +26,3 @@ class CheckOsSytemCalls(FileChecker):
             return
         if id == "os" and attr == "system":
             self._warn_about_os_system(node)
-
-
-
