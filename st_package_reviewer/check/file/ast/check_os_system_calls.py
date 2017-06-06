@@ -13,7 +13,7 @@ class CheckOsSytemCalls(AstChecker):
                       "subprocess.check_output, or use sublime's Default.exec.ExecCommand. Since "
                       "it is likely that the plugin contains platform-specific code, please make "
                       "sure you thought about the platform key in your pull request."
-                      .format(node.lineno, node.col_offset))
+                      .format(node.lineno, node.col_offset + 1))
 
     def visit_Call(self, node):
         try:

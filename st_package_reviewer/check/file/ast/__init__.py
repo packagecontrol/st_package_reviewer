@@ -22,7 +22,8 @@ class AstChecker(FileChecker, ast.NodeVisitor):
                     root = ast.parse(f.read(), str(self.current_file))
                 except SyntaxError as e:
                     with self.file_context(self.current_file):
-                        self.fail("Syntax error at line {}, column {}.".format(e.lineno, e.offset))
+                        self.fail("Syntax error at line {}, column {}."
+                                  .format(e.lineno, e.offset + 1))
                     continue
             self.visit(root)
 
