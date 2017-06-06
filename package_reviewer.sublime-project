@@ -3,7 +3,7 @@
     [
         {
             "path": ".",
-            "folder_exclude_patterns": [".*", "htmlcov", "build", "dist", "*.egg-info"],
+            "folder_exclude_patterns": [".*", "htmlcov", "build", "dist", "*.egg-info", "__pycache__"],
             "file_exclude_patterns": [".coverage"]
         },
         {
@@ -18,7 +18,7 @@
             "name": "Run tests",
             "shell_cmd": "tox",
             "working_dir": "${project_path}",
-            "file_regex": "^(.*?):(\\d+):() (.*)"
+            "file_regex": "^(.*?):(\\d+):(\\d+): (.*)"
         }
     ]
 }

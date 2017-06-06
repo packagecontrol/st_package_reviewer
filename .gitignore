@@ -11,3 +11,6 @@ htmlcov/
 build/
 dist/
 *.egg-info/
+
+*.pyc
+*.sublime-workspace

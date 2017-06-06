@@ -1,0 +1,1 @@
+- Found multiple command prefixes: Bar, Baz, Foo. Consider using one single prefix so as to not clutter the command namespace.
