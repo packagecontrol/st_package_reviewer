@@ -1,5 +1,8 @@
 from sublime_plugin import ApplicationCommand
 
+# The print calls show what sublime_plugin.Command.name
+# translates the class names to.
+
 
 class not_pascal_case_command(ApplicationCommand):
 
@@ -10,30 +13,28 @@ class not_pascal_case_command(ApplicationCommand):
 class not_PascalCaseCommand(ApplicationCommand):
 
     def run(self):
-        print("not_PascalCaseCommand")
+        print("not__pascal_case")
 
 
 class not_PASCALcase_command(ApplicationCommand):
 
     def run(self):
-        print("not_PASCALcase_command")
+        print("not__pASCALcase")
 
 
 class NotPascalCase_command(ApplicationCommand):
 
     def run(self):
-        print("NotPascalCase_command")
+        print("not_pascal_case")
 
 
-# Maybe this should pass:
-# A name like HTTPDownloadCommand is translated to "http_download" by ST
 class NotPASCALCaseCommand(ApplicationCommand):
 
     def run(self):
-        print("PASCALCaseCommand")
+        print("not_pASCALCase")
 
 
 class PascalCaseCommand(ApplicationCommand):
 
     def run(self):
-        print("PascalCaseCommand")
+        print("pascal_case")
