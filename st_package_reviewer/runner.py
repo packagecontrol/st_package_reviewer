@@ -51,7 +51,7 @@ class CheckRunner:
         for failure in self.failures:
             failure.report(file=file)
 
-        print(file=file)
+        print(file=file) # new line
 
         if self.warnings:
             print("Reporting {} warnings:".format(len(self.warnings)), file=file)
@@ -60,3 +60,5 @@ class CheckRunner:
 
         for warning in self.warnings:
             warning.report(file=file)
+
+        print(file=file) # new line
