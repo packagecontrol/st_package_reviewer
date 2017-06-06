@@ -1,5 +1,6 @@
 import functools
 import ast
+import os
 from pathlib import Path
 from st_package_reviewer.check.file import FileChecker
 from st_package_reviewer.check import find_all
@@ -19,7 +20,7 @@ class AstChecker(FileChecker, ast.NodeVisitor):
             with self.current_file.open("r") as f:
                 try:
                     # Cast to string here because otherwise py34 and py35 will complain
-                    root = ast.parse(str(f.read()), self.current_file)
+                    root = ast.parse(f.read(), str(self.current_file))
                 except SyntaxError as e:
                     with self.file_context(self.current_file):
                         self.fail("Syntax error at line {}, column {}.".format(e.lineno, e.offset))
