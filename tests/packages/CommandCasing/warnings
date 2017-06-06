@@ -1,0 +1,15 @@
+- The command 'not_pascal_case_command' is not PascalCase
+    File: plugin.py
+    Line: 4, Column: 1
+- The command 'not_PascalCaseCommand' is not PascalCase
+    File: plugin.py
+    Line: 10, Column: 1
+- The command 'not_PASCALcase_command' is not PascalCase
+    File: plugin.py
+    Line: 16, Column: 1
+- The command 'NotPascalCase_command' is not PascalCase
+    File: plugin.py
+    Line: 22, Column: 1
+- The command 'NotPASCALCaseCommand' is not PascalCase
+    File: plugin.py
+    Line: 30, Column: 1

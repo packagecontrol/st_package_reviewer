@@ -17,10 +17,11 @@ class AstChecker(FileChecker, ast.NodeVisitor):
 
     def visit_all_pyfiles(self):
         pyfiles = self.glob("**/*.py")
-        for self.current_file in pyfiles:
-            root = self._get_ast(self.current_file)
-            if root:
-                self.visit(root)
+        for path in pyfiles:
+            with self.file_context(path):
+                root = self._get_ast(path)
+                if root:
+                    self.visit(root)
 
     def _get_ast(self, path):
         try:
@@ -31,14 +32,16 @@ class AstChecker(FileChecker, ast.NodeVisitor):
         with path.open("r") as f:
             try:
                 # Cast path to string for <py36
-                the_ast = ast.parse(f.read(), str(self.current_file))
+                the_ast = ast.parse(f.read(), str(path))
             except SyntaxError as e:
-                with self.file_context(path):
-                    self.fail("Unable to parse Python file (column {})".format(e.offset + 1),
-                              exception=e)
+                self.fail("Unable to parse Python file (column {})".format(e.offset + 1),
+                          exception=e)
             else:
                 self._ast_cache[path] = the_ast
                 return the_ast
+
+    def node_context(self, node):
+        return self.context("Line: {}, Column: {}".format(node.lineno, node.col_offset + 1))
 
 
 get_checkers = functools.partial(
