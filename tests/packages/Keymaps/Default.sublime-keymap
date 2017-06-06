@@ -11,6 +11,11 @@
       { "key": "following_text", "operator": "regex_contains", "operand": "^[\\}\\]]", "match_all": true }
     ]
   },
+
+  // bindings with upper case letters. First is valid, second is not
+  { "keys": ["Ü"], "command": "hurf_durf" },
+  { "keys": ["ctrl+Ü"], "command": "hurf_durf" },
+
   // invalid bindings
   { "keys": ["ctrl+x"] },
   { "command": "lolk" },
