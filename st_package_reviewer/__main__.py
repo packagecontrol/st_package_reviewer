@@ -13,7 +13,6 @@ from . import set_debug, debug_active, __version__
 from . import repo_tools
 from .runner import CheckRunner
 from .check import file as file_c, repo as repo_c
-from .check.file import ast as ast_c
 
 
 l = logging.getLogger(__package__)
@@ -151,10 +150,6 @@ def main():
         if not _run_checks(file_c.get_checkers(), out, args=[path],
                            fail_on_warnings=args.fail_on_warnings):
             exit_code |= 1
-
-        if not _run_checks(ast_c.get_checkers(), out, args=[path],
-                           fail_on_warnings=args.fail_on_warnings):
-            exit_code |= 4
 
         return exit_code
 
