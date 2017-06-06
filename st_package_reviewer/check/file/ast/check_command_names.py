@@ -11,7 +11,8 @@ class CheckCommandNames(AstChecker):
         self.visit_all_pyfiles()
         if len(self.prefixes) > 1:
             self.warn("Found multiple command prefixes: {}. Consider using one single prefix so as"
-                      " to not clutter the command namespace.".format(", ".join(self.prefixes)))
+                      " to not clutter the command namespace."
+                      .format(", ".join(sorted(list(self.prefixes)))))
 
     # TODO: This only checks immediate base classes; need more traversing for deeper-derived base
     # classes.
@@ -46,7 +47,7 @@ class CheckCommandNames(AstChecker):
         if not node.name.endswith("Command"):
             with self.file_context(self.current_file):
                 self.warn("At line {0}, column {1}, consider replacing {2} with "
-                          "{2}Command.".format(node.lineno, node.col_offset, node.name))
+                          "{2}Command.".format(node.lineno, node.col_offset + 1, node.name))
         # Check if all commands have a common prefix so as to not clutter the command namespace.
         match = re.findall(r"[A-Z][^A-Z]*", node.name)
         if match:
@@ -56,4 +57,4 @@ class CheckCommandNames(AstChecker):
         if not match:
             with self.file_context(self.current_file):
                 self.warn('At line {}, column {}, the command {} is not CamelCase.'.format(
-                    node.lineno, node.col_offset, node.name))
+                    node.lineno, node.col_offset + 1, node.name))

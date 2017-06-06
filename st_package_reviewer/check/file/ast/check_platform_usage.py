@@ -13,13 +13,13 @@ class CheckPlatformUsage(AstChecker):
                       "using sublime.platform() and sublime.arch() Since it is likely likely that "
                       "the plugin contains platform-dependent code, please make sure you thought "
                       "about the platform key in your pull request."
-                      .format(node.lineno, node.col_offset))
+                      .format(node.lineno, node.col_offset + 1))
 
     def _warn_sublime_platform_usage(self, node):
         with self.file_context(self.current_file):
             self.warn("It looks like you're using platform-dependent code at line {}, column {}. "
                       "Please make sure you thought about the platform key in your pull request."
-                      .format(node.lineno, node.col_offset))
+                      .format(node.lineno, node.col_offset + 1))
 
     def visit_Import(self, node):
         for alias_node in node.names:

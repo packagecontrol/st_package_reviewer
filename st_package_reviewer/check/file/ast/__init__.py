@@ -18,10 +18,12 @@ class AstChecker(FileChecker, ast.NodeVisitor):
         for self.current_file in pyfiles:
             with self.current_file.open("r") as f:
                 try:
-                    root = ast.parse(f.read(), self.current_file)
+                    # Cast to string here because otherwise py34 and py35 will complain
+                    root = ast.parse(f.read(), str(self.current_file))
                 except SyntaxError as e:
                     with self.file_context(self.current_file):
-                        self.fail("Syntax error at line {}, column {}.".format(e.lineno, e.offset))
+                        self.fail("Syntax error at line {}, column {}."
+                                  .format(e.lineno, e.offset + 1))
                     continue
             self.visit(root)
 

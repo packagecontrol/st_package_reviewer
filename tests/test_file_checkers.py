@@ -6,6 +6,7 @@ import pytest
 
 from st_package_reviewer.runner import CheckRunner
 from st_package_reviewer.check import file as file_c
+from st_package_reviewer.check.file import ast as ast_c
 
 
 def _collect_test_packages():
@@ -28,7 +29,9 @@ def package_path(request):
 @pytest.fixture(scope='function')
 def check_runner():
     """Return an initialized CheckRunner with all file checkers."""
-    checkers = file_c.get_checkers()
+    checkers = []
+    checkers.extend(file_c.get_checkers())
+    checkers.extend(ast_c.get_checkers())
     return CheckRunner(checkers)
 
 
