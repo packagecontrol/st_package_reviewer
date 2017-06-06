@@ -19,10 +19,9 @@ class AstChecker(FileChecker, ast.NodeVisitor):
             with self.current_file.open("r") as f:
                 try:
                     root = ast.parse(f.read(), self.current_file)
-                except Exception as e:
+                except SyntaxError as e:
                     with self.file_context(self.current_file):
-                        self.fail("Failed to parse! One possibility is that this is a Python2 "
-                                  "file with some Python2 constructs no longer valid in Python3.")
+                        self.fail("Syntax error at line {}, column {}.".format(e.lineno, e.offset))
                     continue
             self.visit(root)
 
