@@ -1,6 +1,5 @@
 import functools
 import ast
-import os
 from pathlib import Path
 from st_package_reviewer.check.file import FileChecker
 from st_package_reviewer.check import find_all
