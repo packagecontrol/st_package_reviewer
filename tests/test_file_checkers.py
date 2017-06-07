@@ -28,7 +28,8 @@ def package_path(request):
 @pytest.fixture(scope='function')
 def check_runner():
     """Return an initialized CheckRunner with all file checkers."""
-    checkers = file_c.get_checkers()
+    checkers = []
+    checkers.extend(file_c.get_checkers())
     return CheckRunner(checkers)
 
 

@@ -1,0 +1,12 @@
+- It looks like you're using platform-dependent code. Make sure you thought about the platform key in your pull request. Also consider replacing the platform module with sublime.platform() and sublime.arch().
+    File: plugin.py
+    Line: 1, Column: 1
+- It looks like you're using platform-dependent code. Make sure you thought about the platform key in your pull request.
+    File: plugin.py
+    Line: 16, Column: 12
+- It looks like you're using platform-dependent code. Make sure you thought about the platform key in your pull request.
+    File: plugin.py
+    Line: 18, Column: 14
+- It looks like you're using platform-dependent code. Make sure you thought about the platform key in your pull request.
+    File: plugin.py
+    Line: 20, Column: 14

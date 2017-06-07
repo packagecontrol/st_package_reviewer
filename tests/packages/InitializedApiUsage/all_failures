@@ -1,0 +1,9 @@
+- Calling unsafe method 'load_settings' of sublime module when API may not have been initialized
+    File: plugin.py
+    Line: 5, Column: 1
+- Calling unsafe method 'run_command' of sublime module when API may not have been initialized
+    File: plugin.py
+    Line: 19, Column: 9
+- Calling unsafe method 'load_resource' of sublime module when API may not have been initialized
+    File: plugin.py
+    Line: 34, Column: 5

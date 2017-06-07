@@ -1,0 +1,6 @@
+- Unable to parse Python file (column 60)
+    File: invalidsyntax.py
+    Exception: invalid syntax (invalidsyntax.py, line 4)
+- Unable to parse Python file (column 24)
+    File: python2file.py
+    Exception: Missing parentheses in call to 'print' (python2file.py, line 8)

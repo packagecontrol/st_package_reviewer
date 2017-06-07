@@ -1,0 +1,2 @@
+- Consider replacing os.system with subprocess.check_output, or use sublime's Default.exec.ExecCommand. Also make sure you thought about the platform key in your pull request.
+    File: plugin.py
