@@ -4,9 +4,6 @@ from . import AstChecker
 class CheckOsSystemCalls(AstChecker):
     """Checks for any calls to os.system and suggests to use subprocess.check_call instead."""
 
-    def check(self):
-        self.visit_all_pyfiles()
-
     def _warn_about_os_system(self, node):
         self.warn("Consider replacing os.system with subprocess.check_output,"
                   " or use sublime's Default.exec.ExecCommand. "

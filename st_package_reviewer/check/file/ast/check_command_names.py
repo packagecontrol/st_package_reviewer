@@ -8,7 +8,7 @@ class CheckCommandNames(AstChecker):
 
     def check(self):
         self.prefixes = set()
-        self.visit_all_pyfiles()
+        super().check()
         if len(self.prefixes) > 1:
             self.warn("Found multiple command prefixes: {}."
                       " Consider using one single prefix"

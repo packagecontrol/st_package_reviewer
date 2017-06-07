@@ -4,9 +4,6 @@ from . import AstChecker
 class CheckPlatformUsage(AstChecker):
     """If the plugin uses the platform package and/or sublime.platform(), issue a warning."""
 
-    def check(self):
-        self.visit_all_pyfiles()
-
     def _warn_platform_module_usage(self, node):
         with self.node_context(node):
             self.warn("It looks like you're using platform-dependent code."

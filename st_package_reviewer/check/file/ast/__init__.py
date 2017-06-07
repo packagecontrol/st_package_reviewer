@@ -15,6 +15,9 @@ class AstChecker(FileChecker, ast.NodeVisitor):
     def __init__(self, base_path):
         super().__init__(base_path)
 
+    def check(self):
+        self.visit_all_pyfiles()
+
     def visit_all_pyfiles(self):
         pyfiles = self.glob("**/*.py")
         for path in pyfiles:
