@@ -1,6 +1,6 @@
 """Review Sublime Text packages."""
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 
 _debug = False
 
