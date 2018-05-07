@@ -156,6 +156,11 @@ class KeyMapping:
                 norm_chords.append(key_chord)
                 continue
 
+            if key_chord == "<character>":
+                # Special catch-all that does not take modifiers
+                norm_chords.append(key_chord)
+                continue
+
             chord_parts = []
             while True:
                 key, plus, key_chord = key_chord.partition("+")

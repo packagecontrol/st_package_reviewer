@@ -28,5 +28,6 @@
   // invalid key in multi-chord
   { "keys": ["ctrl+k", "nope"], "command": "noop" },
   // valid key binding
-  { "keys": ["super+ctrl+alt+shift++"], "command": "noop" }
+  { "keys": ["super+ctrl+alt+shift++"], "command": "noop" },
+  { "keys": ["<character>"], "command": "noop" },
 ]
