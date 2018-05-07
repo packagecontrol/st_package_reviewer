@@ -13,6 +13,8 @@ class CheckJsoncFiles(FileChecker):
         # which is why we'll call them "jsonc" (JSON with Comments)
         jsonc_file_globs = {
             "**/*.sublime-build",
+            "**/*.sublime-color-scheme",
+            "**/*.hidden-sublime-color-scheme",
             "**/*.sublime-commands",
             "**/*.sublime-completions",
             "**/*.sublime-keymap",
@@ -40,6 +42,7 @@ class CheckPlistFiles(FileChecker):
             "**/*.tmPreferences",
             "**/*.tmSnippet",
             "**/*.tmTheme",
+            "**/*.hidden-tmTheme",
         }
 
         for file_path in self.globs(*plist_file_globs):
