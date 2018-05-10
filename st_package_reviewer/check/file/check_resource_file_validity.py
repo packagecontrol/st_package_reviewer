@@ -13,6 +13,7 @@ class CheckJsoncFiles(FileChecker):
         # which is why we'll call them "jsonc" (JSON with Comments)
         jsonc_file_globs = {
             "**/*.sublime-build",
+            "**/*.sublime-color-scheme",
             "**/*.sublime-commands",
             "**/*.sublime-completions",
             "**/*.sublime-keymap",
