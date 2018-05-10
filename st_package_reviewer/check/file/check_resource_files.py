@@ -28,6 +28,7 @@ class CheckHasResourceFiles(FileChecker):
         resource_file_globs = {
             "*.py",
             "**/*.sublime-build",
+            "**/*.sublime-color-scheme",
             "**/*.sublime-commands",
             "**/*.sublime-completions",
             "**/*.sublime-keymap",
