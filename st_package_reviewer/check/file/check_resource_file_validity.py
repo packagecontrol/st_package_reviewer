@@ -14,7 +14,7 @@ class CheckJsoncFiles(FileChecker):
         jsonc_file_globs = {
             "**/*.sublime-build",
             "**/*.sublime-color-scheme",
-            "**/*.hidden-sublime-color-scheme",
+            "**/*.hidden-color-scheme",
             "**/*.sublime-commands",
             "**/*.sublime-completions",
             "**/*.sublime-keymap",
