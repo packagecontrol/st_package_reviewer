@@ -28,6 +28,8 @@ class CheckHasResourceFiles(FileChecker):
         resource_file_globs = {
             "*.py",
             "**/*.sublime-build",
+            "**/*.sublime-color-scheme",
+            "**/*.hidden-color-scheme",
             "**/*.sublime-commands",
             "**/*.sublime-completions",
             "**/*.sublime-keymap",
@@ -42,6 +44,7 @@ class CheckHasResourceFiles(FileChecker):
             "**/*.tmPreferences",
             "**/*.tmSnippet",
             "**/*.tmTheme",
+            "**/*.hidden-tmTheme",
             # hunspell dictionaries
             "**/*.aff",
             "**/*.dic",
