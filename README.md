@@ -15,10 +15,6 @@ For how to *resolve* failures or warnings
 reported by the tool,
 [refer to the wiki][wiki].
 
-Sublime Text 2 has essentially been deprecated
-a long time ago,
-which is why it is not considered.
-
 
 ## Installation
 
