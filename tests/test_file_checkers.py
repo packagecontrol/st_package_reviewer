@@ -54,7 +54,6 @@ CheckAssert = namedtuple("CheckAssert", "message details")
 def _find_check_file(base_path):
     """Determine file with the latest version suffix."""
     check_paths = sorted(base_path.parent.glob(base_path.stem + "*"))
-    print(check_paths)
     file_path = None
     for candidate in check_paths:
         if candidate.suffix:
