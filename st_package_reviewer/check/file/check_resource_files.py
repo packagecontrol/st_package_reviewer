@@ -25,11 +25,14 @@ class CheckPluginsInRoot(FileChecker):
 class CheckHasResourceFiles(FileChecker):
 
     def check(self):
+        # Files with a hidden extension are excluded,
+        # as they serve no purpose without another file using them
+        # (e.g. a plugin).
         resource_file_globs = {
             "*.py",
             "**/*.sublime-build",
             "**/*.sublime-color-scheme",
-            "**/*.hidden-color-scheme",
+            # "**/*.hidden-color-scheme",
             "**/*.sublime-commands",
             "**/*.sublime-completions",
             "**/*.sublime-keymap",
@@ -44,7 +47,7 @@ class CheckHasResourceFiles(FileChecker):
             "**/*.tmPreferences",
             "**/*.tmSnippet",
             "**/*.tmTheme",
-            "**/*.hidden-tmTheme",
+            # "**/*.hidden-tmTheme",
             # hunspell dictionaries
             "**/*.aff",
             "**/*.dic",
