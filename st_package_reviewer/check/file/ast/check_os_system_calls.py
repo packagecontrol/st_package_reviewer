@@ -13,7 +13,7 @@ class CheckOsSystemCalls(AstChecker):
         try:
             attr = node.func.attr
             id = node.func.value.id
-        except Exception as e:
+        except Exception:
             return
         if id == "os" and attr == "system":
             self._warn_about_os_system(node)

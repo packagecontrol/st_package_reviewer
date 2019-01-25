@@ -22,7 +22,6 @@ def _is_derived_from_listener(node):
 
 
 class CheckInitializedApiUsage(AstChecker):
-
     """Check for function calls of the sublime module in unsafe places.
 
     Notably, these are:
@@ -84,7 +83,7 @@ class CheckInitializedApiUsage(AstChecker):
         try:
             attr = node.func.attr
             id_ = node.func.value.id
-        except AttributeError as e:
+        except AttributeError:
             return
         else:
             if id_ == "sublime" and attr not in ("platform", "arch", "version", "channel"):

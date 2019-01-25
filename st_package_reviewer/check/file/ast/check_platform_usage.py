@@ -30,7 +30,7 @@ class CheckPlatformUsage(AstChecker):
         try:
             attr = node.func.attr
             id_ = node.func.value.id
-        except Exception as e:
+        except Exception:
             return
         if id_ == "sublime" and attr in ("platform", "arch"):
             self._warn_sublime_platform_usage(node)
