@@ -18,7 +18,7 @@ install:
   - '[[ $TOXENV == *py* ]] && pip install coveralls || true'
 
 script:
-  - tox
+  - tox -- -v
 
 after_success:
   - '[[ $TOXENV == *py* ]] && coveralls || true'
