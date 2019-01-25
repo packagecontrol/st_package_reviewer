@@ -1,6 +1,7 @@
 from collections import namedtuple
 import logging
 from pathlib import Path
+import sys
 
 import pytest
 
@@ -50,10 +51,25 @@ config_logging()
 CheckAssert = namedtuple("CheckAssert", "message details")
 
 
-def _read_check_asserts(file_path):
+def _find_check_file(base_path):
+    """Determine file with the latest version suffix."""
+    check_paths = sorted(base_path.parent.glob(base_path.stem + "*"))
+    print(check_paths)
+    file_path = None
+    for candidate in check_paths:
+        if candidate.suffix:
+            *_, major, minor = candidate.suffix
+            if (int(major), int(minor)) > sys.version_info[:2]:
+                continue
+        file_path = candidate
+    return file_path
+
+
+def _read_check_asserts(base_path):
     """Read CheckAsserts from file."""
     asserts = set()
-    if file_path.is_file():
+    file_path = _find_check_file(base_path)
+    if file_path:
         with file_path.open('r') as f:
             message = None
             details = []
