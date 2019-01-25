@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[packages]
+st-package-reviewer = {editable = true, path = "."}
+
+[dev-packages]
+coverage="*"
+flake8="*"
+flake8-docstrings="*"
+pytest="*"
+pytest-watch="*"
+tox="*"
+twine="*"
+
+[requires]
+python_version = "3.7"

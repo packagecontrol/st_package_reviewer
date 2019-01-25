@@ -36,7 +36,8 @@ def check_runner():
 def config_logging():
     # Ensure we see debug output if tests fail
     logger = logging.getLogger("st_package_reviewer")
-    logger.addHandler(logging.StreamHandler())
+    # pytest now tracks log calls separately
+    # logger.addHandler(logging.StreamHandler())
     logger.setLevel(logging.DEBUG)
 
 

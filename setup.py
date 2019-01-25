@@ -49,7 +49,7 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     keywords=["sublime text", "review", "reviewer", "package", "package control"],
-    install_requires=read("requirements.in").splitlines(),
+    install_requires=["github3.py>=1.0.0a4", "pyperclip"],
     package_data={
         # `data` directory contains reference .sublime-keymap files
         "st_package_reviewer": ["data/*", "README*"],

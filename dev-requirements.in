@@ -1,9 +1,0 @@
--r requirements.in
-coverage
-flake8
-flake8-docstrings
-pip-tools
-pytest
-pytest-watch
-tox
-twine
