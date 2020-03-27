@@ -37,8 +37,8 @@ class AstChecker(FileChecker, ast.NodeVisitor):
                 # Cast path to string for <py36
                 the_ast = ast.parse(f.read(), str(path))
             except SyntaxError as e:
-                self.fail("Unable to parse Python file (column {})".format(e.offset + 1),
-                          exception=e)
+                with self.context("Line: {}".format(e.lineno)):
+                    self.fail("Unable to parse Python file", exception=e)
             else:
                 self._ast_cache[path] = the_ast
                 return the_ast
