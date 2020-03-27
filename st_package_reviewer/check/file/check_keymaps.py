@@ -111,7 +111,6 @@ class KeyMapping:
 
     @classmethod
     def default_maps(cls):
-        # type: Dict[str, KeyMapping]
         if not cls._def_maps:
             cls._def_maps = {plat: cls(DATA_PATH / fname)
                              for plat, fname in zip(PLATFORMS, PLATFORM_FILENAMES)}

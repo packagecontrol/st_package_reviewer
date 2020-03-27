@@ -19,5 +19,5 @@ class CheckNoModifySysPath(AstChecker):
                 and func.value.value.id == 'sys'
             ):
                 self._warn_about_modify_sys_path(node)
-        except Exception as e:
+        except Exception:
             return

@@ -39,8 +39,9 @@ def _prepare_nargs(nargs):
     return new_nargs
 
 
-def main():
-    """\
+def main(args):
+    """Start the main entry point.
+
     Return values:
         0: No errors
         -1: Invalid command line arguments
@@ -53,7 +54,7 @@ def main():
     Interactive mode:
         Enter package paths or repository URLS continuously.
         Type `c` to copy the last report to your clipboard.
-    """  # flake8: noqa
+    """  # noqa: D401
     parser = argparse.ArgumentParser(prog=__package__,
                                      description="Check a Sublime Text package for common errors.",
                                      epilog=textwrap.dedent(main.__doc__),
@@ -74,7 +75,7 @@ def main():
                         help="Increase verbosity.")
     parser.add_argument("--debug", action='store_true',
                         help="Enter pdb on exceptions. Implies --verbose.")
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     # post parsing
     if args.debug:
@@ -225,7 +226,7 @@ def _run_checks(checkers, file, args=[], kwargs={}, fail_on_warnings=False):
 
 if __name__ == '__main__':
     try:
-        sys.exit(main())
+        sys.exit(main(sys.argv[1:]))
     except Exception:
         if debug_active():
             import pdb
