@@ -39,7 +39,7 @@ def _prepare_nargs(nargs):
     return new_nargs
 
 
-def main(args):
+def main(args=None):
     """Start the main entry point.
 
     Return values:
@@ -55,6 +55,10 @@ def main(args):
         Enter package paths or repository URLS continuously.
         Type `c` to copy the last report to your clipboard.
     """  # noqa: D401
+    
+    if not args:
+        args = sys.argv[1:]
+
     parser = argparse.ArgumentParser(prog=__package__,
                                      description="Check a Sublime Text package for common errors.",
                                      epilog=textwrap.dedent(main.__doc__),
@@ -226,7 +230,7 @@ def _run_checks(checkers, file, args=[], kwargs={}, fail_on_warnings=False):
 
 if __name__ == '__main__':
     try:
-        sys.exit(main(sys.argv[1:]))
+        sys.exit(main())
     except Exception:
         if debug_active():
             import pdb
