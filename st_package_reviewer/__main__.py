@@ -55,7 +55,6 @@ def main(args=None):
         Enter package paths or repository URLS continuously.
         Type `c` to copy the last report to your clipboard.
     """  # noqa: D401
-    
     if not args:
         args = sys.argv[1:]
 
@@ -119,8 +118,7 @@ def main(args=None):
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-                print("Unable to download repository; {} {}".format(url, e.__name__, e),
-                      file=out)
+                print("Unable to download repository; {} {}".format(url, e), file=out)
                 return 4
 
             if not repo:
@@ -161,7 +159,7 @@ def main(args=None):
     def _finalize_report():
         print(file=out)
         print("For more details on the report messages (for example how to resolve them), go to:"
-              "\nhttps://github.com/packagecontrol/py_package_reviewer/wiki", file=out)
+              "\nhttps://github.com/packagecontrol/st_package_reviewer/wiki", file=out)
         print(file=out)
         report = out.getvalue()
         print(report, end='')
