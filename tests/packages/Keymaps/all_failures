@@ -24,3 +24,6 @@
 - Invalid key 'Ü'
     File: Default.sublime-keymap
     Binding: {"command": "hurf_durf", "keys": ["ctrl+\u00dc"]}
+- Single-chord modifier bindings are disallowed
+    File: Default.sublime-keymap
+    Binding: {"command": "hurf_durf", "keys": ["ctrl"]}

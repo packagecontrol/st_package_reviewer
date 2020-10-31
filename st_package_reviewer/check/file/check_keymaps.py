@@ -144,14 +144,21 @@ class KeyMapping:
 
     @classmethod
     def _verify_and_normalize_chords(cls, chords):
-        modifiers = ("ctrl", "super", "alt", "shift", "primary")
-
         if not chords or not isinstance(chords, list):
             raise KeyMappingError("'keys' key is empty or not a list")
         norm_chords = []
         for key_chord in chords:
             if len(key_chord) == 1:
                 # Any single character key is valid (representing a symbol)
+                norm_chords.append(key_chord)
+                continue
+
+            elif key_chord in cls.MODIFIERS:
+                # Legal since ST4
+                if len(chords) == 1:
+                    # But we disallow
+                    # TODO report minimum version
+                    raise KeyMappingError("Single-chord modifier bindings are disallowed")
                 norm_chords.append(key_chord)
                 continue
 
@@ -163,7 +170,7 @@ class KeyMapping:
                         key = plus
                     if not cls._key_is_valid(key):
                         raise KeyMappingError("Invalid key '{}'".format(key))
-                    chord_parts.sort(key=modifiers.index)
+                    chord_parts.sort(key=cls.MODIFIERS.index)
                     chord_parts.append(key)
                     break
 
@@ -172,7 +179,7 @@ class KeyMapping:
                 elif key == "command":
                     key = "super"
                 # TODO "primary"
-                if key not in modifiers:
+                if key not in cls.MODIFIERS:
                     raise KeyMappingError("Invalid modifier key '{}'".format(key))
 
                 chord_parts.append(key)
@@ -213,3 +220,5 @@ class KeyMapping:
                     "plus", "minus", "equals", "forward_slash", "backquote",
                     # Note: this list is incomplete and sourced from the default bindings
                     }
+
+    MODIFIERS = ("ctrl", "super", "alt", "altgr", "shift", "primary")
