@@ -34,4 +34,12 @@
   // valid key binding
   { "keys": ["super+ctrl+alt+shift++"], "command": "noop" },
   { "keys": ["primary+shift+1"], "command": "noop" },
+
+  // <character> bindings must have a context
+  { "keys": ["<character>"], "command": "noop" },
+  { "keys": ["<character>"], "command": "noop",
+    "context": [
+      { "key": "setting.auto_indent" },
+    ]
+   },
 ]
