@@ -21,6 +21,9 @@
     File: Default (OSX).sublime-keymap
 - The binding ['super+alt+s'] unconditionally overrides a default binding
     File: Default (OSX).sublime-keymap
+- '<character>' bindings must have a 'context'
+    File: Default.sublime-keymap
+    Binding: {"command": "noop", "keys": ["<character>"]}
 - Invalid key 'Ü'
     File: Default.sublime-keymap
     Binding: {"command": "hurf_durf", "keys": ["ctrl+\u00dc"]}

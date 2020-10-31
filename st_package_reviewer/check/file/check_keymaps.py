@@ -86,6 +86,12 @@ class CheckKeymaps(FileChecker):
                     self.warn("Binding defines supplementary keys {}".format(supplementary_keys))
 
                 if 'keys' in binding:
+                    if binding['keys'] == ["<character>"]:
+                        if not binding.get('context'):
+                            self.fail("'<character>' bindings must have a 'context'")
+                            idx_to_del.add(i)
+                        continue
+
                     try:
                         norm_chords = k_map._verify_and_normalize_chords(binding['keys'])
                     except KeyMappingError as e:
