@@ -16,6 +16,10 @@
   { "keys": ["Ü"], "command": "hurf_durf" },
   { "keys": ["ctrl+Ü"], "command": "hurf_durf" },
 
+  // bindings with modifiers as keys; we disallow the first
+  { "keys": ["ctrl"], "command": "hurf_durf" },
+  { "keys": ["ctrl", "alt"], "command": "hurf_durf" },
+
   // invalid bindings
   { "keys": ["ctrl+x"] },
   { "command": "lolk" },
