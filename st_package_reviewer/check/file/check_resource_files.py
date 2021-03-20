@@ -56,18 +56,3 @@ class CheckHasResourceFiles(FileChecker):
         has_resource_files = any(self.glob(ptrn) for ptrn in resource_file_globs)
         if not has_resource_files:
             self.fail("The package does not define any file that interfaces with Sublime Text")
-
-
-class CheckHasSublimeSyntax(FileChecker):
-
-    def check(self):
-        syntax_files = self.glob("**/*.sublime-syntax")
-
-        for path in syntax_files:
-            if (
-                not path.with_suffix(".tmLanguage").is_file()
-                and not path.with_suffix(".hidden-tmLanguage").is_file()
-            ):
-                with self.file_context(path):
-                    self.warn("'.sublime-syntax' support has been added in build 3092 and there "
-                              "is no '.tmLanguage' fallback file")
