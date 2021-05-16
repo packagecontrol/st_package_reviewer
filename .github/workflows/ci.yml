@@ -17,7 +17,7 @@ jobs:
           python-version: 3.x
 
       - name: Install poetry
-        uses: dschep/install-poetry-action@v1.3
+        uses: snok/install-poetry@v1.1.4
         with:
           version: ${{ env.POETRY_VERSION }}
 
@@ -43,10 +43,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install poetry
-        uses: dschep/install-poetry-action@v1.3
+        uses: snok/install-poetry@v1.1.4
         with:
           version: ${{ env.POETRY_VERSION }}
-          create_virtualenvs: true
+          virtualenvs-create: true
 
       - name: Cache poetry virtualenv
         uses: actions/cache@v2
