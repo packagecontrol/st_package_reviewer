@@ -60,7 +60,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run tests
-        run: py.test --cov-report term-missing
+        run: poetry run py.test
 
       - name: Coveralls
         continue-on-error: true
