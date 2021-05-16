@@ -20,6 +20,7 @@ jobs:
         uses: snok/install-poetry@v1.1.4
         with:
           version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: false
 
       # Skip cache because we have few deps
       - name: Install flake8
@@ -33,7 +34,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9']
-    name: Tests on Python ${{ matrix.python-version }}
+    name: pytest (Python ${{ matrix.python-version }})
     steps:
       - uses: actions/checkout@v2
 
@@ -60,12 +61,10 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run tests
-        run: poetry run py.test
+        run: poetry run py.test --cov st_package_reviewer --cov tests --cov-report term-missing
 
       - name: Coveralls
         continue-on-error: true
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: |
-          pip install coveralls
-          coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
