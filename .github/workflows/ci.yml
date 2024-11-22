@@ -3,7 +3,7 @@ name: CI
 on: [push, pull_request]
 
 env:
-  POETRY_VERSION: 1.1.6
+  POETRY_VERSION: 1.8.4
 
 jobs:
   flake8:
@@ -12,12 +12,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
+        uses: actions/setup-python@v5
 
       - name: Install poetry
-        uses: snok/install-poetry@v1.1.4
+        uses: snok/install-poetry@v1
         with:
           version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: false
@@ -33,18 +31,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
     name: pytest (Python ${{ matrix.python-version }})
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install poetry
-        uses: snok/install-poetry@v1.1.4
+        uses: snok/install-poetry@v1
         with:
           version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: true
