@@ -1,0 +1,4 @@
+- The package does not define any file that interfaces with Sublime Text
+- unable to load `messages.json`
+    File: messages.json
+    Exception: Illegal trailing comma before end of object: line 2 column 37 (char 38)

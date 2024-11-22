@@ -1,9 +1,15 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+  workflow_dispatch:
 
 env:
-  POETRY_VERSION: 1.1.6
+  POETRY_VERSION: 1.8.4
 
 jobs:
   flake8:
@@ -12,19 +18,19 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          python-version: '3.12'
 
       - name: Install poetry
-        uses: snok/install-poetry@v1.1.4
+        uses: snok/install-poetry@v1
         with:
           version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: false
 
       # Skip cache because we have few deps
       - name: Install flake8
-        run: poetry install --no-root -v -E flake8
+        run: poetry install -v --no-root --only lint
 
       - name: Run flake8
         run: poetry run flake8 -v .
@@ -32,19 +38,20 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
     name: pytest (Python ${{ matrix.python-version }})
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install poetry
-        uses: snok/install-poetry@v1.1.4
+        uses: snok/install-poetry@v1
         with:
           version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: true
@@ -57,7 +64,7 @@ jobs:
           key: poetry-tests-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install test dependencies
-        run: poetry install -v -E test
+        run: poetry install -v --only main --only test
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run tests
