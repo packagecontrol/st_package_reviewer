@@ -34,8 +34,7 @@ class AstChecker(FileChecker, ast.NodeVisitor):
 
         with path.open("r") as f:
             try:
-                # Cast path to string for <py36
-                the_ast = ast.parse(f.read(), str(path))
+                the_ast = ast.parse(f.read(), path)
             except SyntaxError as e:
                 with self.context("Line: {}".format(e.lineno)):
                     self.fail("Unable to parse Python file", exception=e)

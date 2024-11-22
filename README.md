@@ -5,7 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/st-package-reviewer.svg)](https://pypi.python.org/pypi/st-package-reviewer)
 [![Python Versions](https://img.shields.io/pypi/pyversions/st-package-reviewer.svg)](https://pypi.python.org/pypi/st-package-reviewer)
 
-A tool to review packages for [Sublime Text 3][]
+A tool to review packages for [Sublime Text][]
 (and its package manager [Package Control][]).
 Supports passing local file paths
 or URLs to GitHub repositories.
@@ -18,7 +18,7 @@ reported by the tool,
 
 ## Installation
 
-Requires **Python 3.4** or higher.
+Requires **Python 3.8** or higher.
 
 ```bash
 $ pip install st-package-reviewer
@@ -62,6 +62,6 @@ Interactive mode:
 ```
 
 
-[Sublime Text 3]: https://sublimetext.com/
+[Sublime Text]: https://sublimetext.com/
 [Package Control]: https://packagecontrol.io/
 [wiki]: https://github.com/packagecontrol/st_package_reviewer/wiki
