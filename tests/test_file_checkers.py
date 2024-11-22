@@ -1,6 +1,7 @@
 from collections import namedtuple
 import logging
 from pathlib import Path
+import re
 import sys
 
 import pytest
@@ -56,8 +57,8 @@ def _find_check_file(base_path):
     check_paths = sorted(base_path.parent.glob(base_path.stem + "*"))
     file_path = None
     for candidate in check_paths:
-        if candidate.suffix:
-            *_, major, minor = candidate.suffix
+        if candidate.suffix and (match := re.match(r"^\.py(\d)(\d+)$", candidate.suffix)):
+            major, minor = match.groups()
             if (int(major), int(minor)) > sys.version_info[:2]:
                 continue
         file_path = candidate
