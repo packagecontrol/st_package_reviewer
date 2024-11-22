@@ -30,7 +30,7 @@ jobs:
 
       # Skip cache because we have few deps
       - name: Install flake8
-        run: poetry install --no-root -v -E flake8
+        run: poetry install -v --no-root --only lint
 
       - name: Run flake8
         run: poetry run flake8 -v .
@@ -64,7 +64,7 @@ jobs:
           key: poetry-tests-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install test dependencies
-        run: poetry install -v -E test
+        run: poetry install -v --only main --only test
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run tests

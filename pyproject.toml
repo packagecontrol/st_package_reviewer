@@ -32,24 +32,17 @@ st_package_reviewer = "st_package_reviewer.__main__:main"
 pyperclip = "^1.7.0"
 python = "^3.8.1"
 
-# Actually dev dependencies, but those can't be specified in extras.
-# https://github.com/python-poetry/poetry/issues/129
-flake8 = { version = "^7.1.1", optional = true }
-flake8-docstrings = { version = "^1.7.0", optional = true }
+[tool.poetry.group.lint.dependencies]
+flake8 = "^7.1.1"
+flake8-docstrings = "^1.7.0"
 
-pytest = { version = "^8", optional = true }
-pytest-cov = { version = "^5", optional = true }
+[tool.poetry.group.test.dependencies]
+pytest = "^8"
+pytest-cov = "^5"
 
-pytest-watch = { version = "^4.2.0", optional = true }
-tox = { version = "^3.23.1", optional = true }
-
-[tool.poetry.dev-dependencies]
-# See optional dependencies above.
-
-[tool.poetry.extras]
-test = ["pytest", "pytest-cov"]
-test-local = ["pytest-watch", "tox"]
-flake8 = ["flake8", "flake8-docstrings"]
+[tool.poetry.group.test-local.dependencies]
+pytest-watch = "^4.2.0"
+tox = "^3.23.1"
 
 
 [tool.pytest]
