@@ -70,7 +70,9 @@ def _read_check_asserts(base_path):
     asserts = set()
     file_path = _find_check_file(base_path)
     if file_path:
-        with file_path.open('r') as f:
+        # Ensure UTF-8 so Unicode assertions (e.g., 'Ü') read correctly across platforms,
+        # and by that we mean ... well Windows.
+        with file_path.open('r', encoding='utf-8') as f:
             message = None
             details = []
             line_iter = iter(f)
