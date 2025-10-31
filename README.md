@@ -18,7 +18,7 @@ reported by the tool,
 
 ## Installation
 
-Requires **Python 3.8** or higher.
+Requires **Python 3.13**.
 
 ```bash
 $ pip install st-package-reviewer
@@ -62,6 +62,37 @@ Interactive mode:
 ```
 
 
+## Development (uv, Python 3.13)
+
+This repo uses [uv](https://github.com/astral-sh/uv) and targets Python 3.13.
+
+- Setup environment: `uv sync --extra dev`
+- Run the CLI: `uv run st_package_reviewer --version`
+- Run tests: `uv run pytest`
+- Lint: `uv run flake8 .`
+- Optional watch mode (loop on fail): `uv run pytest -f`
+- Optional parallel runs: `uv run pytest -n auto`
+
+
 [Sublime Text]: https://sublimetext.com/
 [Package Control]: https://packagecontrol.io/
 [wiki]: https://github.com/packagecontrol/st_package_reviewer/wiki
+
+## Development Workflow
+
+- Tests
+  - Quick run: `uv run pytest -q`
+  - With coverage: `uv run pytest --cov st_package_reviewer --cov tests --cov-report term-missing`
+  - Watch mode (loop on fail): `uv run pytest -f`
+  - Parallel runs: `uv run pytest -n auto`
+
+- Run the CLI during development
+  - Are we there?: `uv run st_package_reviewer --version`
+  - Interactive: `uv run st_package_reviewer`
+  - Local path: `uv run st_package_reviewer /path/to/package`
+  - GitHub repo URL: `uv run st_package_reviewer https://github.com/owner/repo`
+
+## Publishing
+
+  - Just create a tag named `vX.Y.Z` (e.g., `v0.4.0`)
+  - On tag push, `.github/workflows/release.yml` builds and uploads to PyPI

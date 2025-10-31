@@ -1,0 +1,22 @@
+[flake8]
+exclude =
+  ./.*,
+  __pycache__/,
+  htmlcov/,
+  venv/,
+  tests/packages,
+  semver.py,
+  dist,
+  build,
+max-line-length=100
+ignore =
+  # D10{0..4}  Missing docstring in public {module,class,method,function,package}
+  # D105: Missing docstring in magic method
+  # D107: Missing docstring in __init__
+  D100, D101, D102, D103, D104, D105, D107
+  # The default ignore list:
+  # E121, E123, E126, E133, E226, E24, E704, W503, W504
+  # W503: line break occurred before a binary operator
+  W503,
+  # E741: ambiguous variable name 'l'
+  E741,

@@ -2,6 +2,7 @@
 .tox/
 .cache/
 **/__pycache__/
+.venv/
 
 # coverage
 htmlcov/
@@ -14,3 +15,5 @@ dist/
 
 *.pyc
 *.sublime-workspace
+st_package_reviewer/_version.py
+uv.lock
