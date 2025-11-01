@@ -32,7 +32,7 @@ class CheckRunner:
     def result(self):
         """Return whether checks ran without issues (`True`) or there were failures (`False`)."""
         if not self._checked:
-            raise RuntimeError("Check has not been perfomed yet")
+            raise RuntimeError("Check has not been performed yet")
         success = not bool(self.failures)
         if self.fail_on_warnings:
             success &= not bool(self.warnings)
