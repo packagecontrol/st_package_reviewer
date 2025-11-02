@@ -38,7 +38,7 @@ class CheckMessages(FileChecker):
                     self.fail("unable to load `messages.json`", exception=e)
                     return
 
-            prefix_regex = '^(' + '|'.join(list(self.prefixes)) + ')'
+            prefix_regex = '^(' + '|'.join(re.escape(p) for p in self.prefixes) + ')'
             for key, rel_path in data.items():
                 if key == "install":
                     pass
