@@ -1,0 +1,25 @@
+name: Package Reviewer PR action
+description: Review a repository or channel PR
+inputs:
+  pr:
+    description: Pull Request URL (e.g. https://github.com/wbond/package_control_channel/pull/123)
+    required: true
+  file:
+    description: Path to channel JSON within the repo
+    default: repository.json
+    required: false
+  thecrawl:
+    description: "Optional path to a local thecrawl repo, or a URL to clone (supports @ref to pin)"
+    default: https://github.com/packagecontrol/thecrawl
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Ensure uv is available
+      uses: astral-sh/setup-uv@v3
+
+    - name: Run Package Reviewer
+      shell: bash
+      run: |
+        set -euo pipefail
+        "${{ github.action_path }}/action.sh" --pr "${{ inputs.pr }}" --file "${{ inputs.file }}" --thecrawl "${{ inputs.thecrawl }}"

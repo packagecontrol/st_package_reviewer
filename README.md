@@ -16,6 +16,11 @@ reported by the tool,
 [refer to the wiki][wiki].
 
 
+## Usage as a GitHub Action
+
+See gh_action/README.md for how to run this as a composite action that runs on channel/registry PRs.
+
+
 ## Installation
 
 Requires **Python 3.13**.
