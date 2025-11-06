@@ -50,9 +50,12 @@ def main(argv=None) -> int:
     changed.sort()
 
     # Print summary to stderr
-    eprint("Removed " + _format_oxford_list(removed))
-    eprint("Changed " + _format_oxford_list(changed))
-    eprint("Added " + _format_oxford_list(added))
+    eprint(
+        "::notice title=CHANGES ::"
+        f"Removed {_format_oxford_list(removed)}, "
+        f"changed {_format_oxford_list(changed)}, "
+        f"added {_format_oxford_list(added)}."
+    )
 
     if args.print_changed_added:
         for name in changed + added:
@@ -71,12 +74,12 @@ def extract_registry_map(registry_json) -> dict:
       }
     """
     if not isinstance(registry_json, dict):
-        eprint("Error: registry JSON must be an object with 'packages' list")
+        eprint("::error ::registry JSON must be an object with 'packages' list")
         sys.exit(2)
 
     pkgs = registry_json.get('packages')
     if not isinstance(pkgs, list):
-        eprint("Error: registry JSON must contain 'packages' as a list")
+        eprint("::error ::registry JSON must contain 'packages' as a list")
         sys.exit(2)
 
     result = {}

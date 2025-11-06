@@ -83,7 +83,7 @@ BASE_SHA=$(gh pr view "$PR_URL" --json baseRefOid -q .baseRefOid)
 HEAD_SHA=$(gh pr view "$PR_URL" --json headRefOid -q .headRefOid)
 
 if [[ -z "$BASE_NWO" || -z "$BASE_SHA" || -z "$HEAD_SHA" ]]; then
-  echo "Error: failed to resolve PR details via gh" >&2
+  echo "::error ::Error: failed to resolve PR details via gh" >&2
   echo "  PR:        $PR_URL" >&2
   echo "  base nwo:  ${BASE_NWO:-<empty>}" >&2
   echo "  base sha:  ${BASE_SHA:-<empty>}" >&2
@@ -149,7 +149,7 @@ resolve_crawler_path() {
 
 CRAWLER_REPO=$(resolve_crawler_path)
 if [[ ! -d "$CRAWLER_REPO" ]]; then
-  echo "Error: could not find or clone thecrawl" >&2
+  echo "::error ::Error: could not find or clone thecrawl" >&2
   exit 2
 fi
 
@@ -174,7 +174,7 @@ mapfile -t PKGS < <(python3 "$SCRIPT_DIR/diff_repository.py" --base-file "$BASE_
   | sed '/^$/d')
 
 if [[ ${#PKGS[@]} -eq 0 ]]; then
-  echo "No changed or added packages to crawl." >&2
+  echo "::notice ::No changed or added packages to crawl." >&2
   exit 0
 fi
 
@@ -192,7 +192,7 @@ for pkg in "${PKGS[@]}"; do
   STATUS=$?
   set -e
   if [[ $STATUS -ne 0 || ! -s "$wsfile" ]]; then
-    echo "  ! Crawl failed for $pkg" >&2
+    echo "::error ::! Crawl failed for $pkg" >&2
     failures=$((failures+1))
     continue
   fi
@@ -200,7 +200,7 @@ for pkg in "${PKGS[@]}"; do
   # Extract release URLs (and versions) from workspace
   mapfile -t RELS < <(python3 "$SCRIPT_DIR/parse_workspace.py" "$wsfile" "$pkg")
   if [[ ${#RELS[@]} -eq 0 ]]; then
-    echo "  ! No releases found for $pkg" >&2
+    echo "::error  ::! No releases found for $pkg" >&2
     failures=$((failures+1))
     continue
   fi
@@ -224,7 +224,7 @@ for pkg in "${PKGS[@]}"; do
     zipfile="$workdir/pkg.zip"
     echo "  Downloading release $disp_ver: $url" >&2
     if ! download_zip "$url" "$zipfile"; then
-      echo "  ! Download failed for $pkg@$disp_ver" >&2
+      echo "::error  ::! Download failed for $pkg@$disp_ver" >&2
       failures=$((failures+1))
       continue
     fi
@@ -233,7 +233,7 @@ for pkg in "${PKGS[@]}"; do
     # Prefer unzip; fallback to Python zipfile
     if command -v unzip >/dev/null 2>&1; then
       if ! unzip -q -o "$zipfile" -d "$workdir"; then
-        echo "  ! Unzip failed for $pkg@$disp_ver" >&2
+        echo "::error  ::! Unzip failed for $pkg@$disp_ver" >&2
         failures=$((failures+1))
         continue
       fi
@@ -244,7 +244,7 @@ zf = zipfile.ZipFile(sys.argv[1])
 zf.extractall(sys.argv[2])
 PY
       if [[ $? -ne 0 ]]; then
-        echo "  ! Unzip failed for $pkg@$disp_ver (python)" >&2
+        echo "::error  ::! Unzip failed for $pkg@$disp_ver (python)" >&2
         failures=$((failures+1))
         continue
       fi
@@ -253,13 +253,23 @@ PY
     # Determine the top-level extracted directory
     topdir=$(find "$workdir" -mindepth 1 -maxdepth 1 -type d | head -n1)
     if [[ -z "$topdir" ]]; then
-      echo "  ! Could not locate extracted folder for $pkg@$disp_ver" >&2
+      echo "::error  ::! Could not locate extracted folder for $pkg@$disp_ver" >&2
       failures=$((failures+1))
       continue
     fi
 
     echo "  Reviewing with st_package_reviewer: $topdir" >&2
-    if ! uv run st_package_reviewer "$topdir"; then
+    if ! uv run st_package_reviewer "$topdir" | awk '
+      /^Reporting [0-9]+ errors:/   { mode = "error";   next }
+      /^Reporting [0-9]+ warnings:/ { mode = "warning"; next }
+      /^- / && mode {
+        sub(/^- /, "");
+        print "::" mode " title=CHECK ::" $0;
+        next;
+      }
+      { mode = ""; print }
+    ';
+    then
       echo "  ! Review failed for $pkg@$disp_ver" >&2
       failures=$((failures+1))
       continue
@@ -268,9 +278,9 @@ PY
 done
 
 if [[ $failures -gt 0 ]]; then
-  echo "Completed crawling with $failures failure(s)." >&2
+  echo "::error ::Completed with $failures failure(s)." >&2
   exit 1
 else
-  echo "Completed crawling successfully." >&2
+  echo "::notice title=PASS ::Completed successfully." >&2
   exit 0
 fi
