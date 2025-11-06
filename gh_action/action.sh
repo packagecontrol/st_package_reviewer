@@ -220,10 +220,11 @@ for pkg in "${PKGS[@]}"; do
     if [[ "$ver" == "$url" ]]; then ver=""; fi
 
     i=$((i+1))
-    disp_ver="$ver"
-    [[ -z "$disp_ver" ]] && disp_ver="r$i"
+    [[ -z "$ver" ]] && ver="r$i"
     # sanitize for filesystem path
-    safe_ver=$(printf "%s" "$disp_ver" | tr -d '\r' | sed 's/[^A-Za-z0-9._-]/_/g')
+    safe_ver=$(printf "%s" "$ver" | tr -d '\r' | sed 's/[^A-Za-z0-9._-]/_/g')
+    # display version (strip CR only)
+    disp_ver=$(printf "%s" "$ver" | tr -d '\r')
 
     workdir="$TMPDIR/review/$pkg/$safe_ver"
     mkdir -p "$workdir"
