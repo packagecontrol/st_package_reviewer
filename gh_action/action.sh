@@ -214,12 +214,18 @@ for pkg in "${PKGS[@]}"; do
 
   i=0
   for rec in "${RELS[@]}"; do
+    i=$((i+1))
     url="${rec%%$'\t'*}"
     ver="${rec#*$'\t'}"
+
+    if [[ -z "$url" ]]; then
+      echo "::error  ::! Missing release URL for $pkg release #$i" >&2
+      failures=$((failures+1))
+      continue
+    fi
+
     # if no tab present, ver==url; fix that
     if [[ "$ver" == "$url" ]]; then ver=""; fi
-
-    i=$((i+1))
     if [[ -z "$ver" ]]; then
       echo "::warning ::Could not extract a version for $pkg release #$i (url: $url); using r$i" >&2
       ver="r$i"
