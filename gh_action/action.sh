@@ -37,6 +37,9 @@ if [[ -z "$PR_URL" ]]; then
   echo "Error: --pr is required" >&2; usage; exit 2
 fi
 
+# Normalize relative path (strip leading ./)
+REL_PATH="${REL_PATH#./}"
+
 if ! command -v gh >/dev/null 2>&1; then
   echo "Error: gh (GitHub CLI) is required" >&2; exit 2
 fi
@@ -44,67 +47,6 @@ if ! command -v uv >/dev/null 2>&1; then
   echo "Error: uv is required" >&2; exit 2
 fi
 
-# Robust ZIP downloader with fallback to gh for GitHub zipball URLs
-download_zip() {
-  local url="$1" dest="$2"
-  mkdir -p "$(dirname "$dest")"
-  rm -f "$dest.part" "$dest"
-  # First try curl with retries
-  if curl -fSL --retry 3 --retry-all-errors --connect-timeout 15 --max-time 600 \
-      -o "$dest.part" "$url"; then
-    mv "$dest.part" "$dest"
-    return 0
-  fi
-  rm -f "$dest.part"
-  # Fallback for codeload.github.com/<owner>/<repo>/zip/<ref>
-  if [[ "$url" =~ ^https://codeload\.github\.com/([^/]+)/([^/]+)/zip/(.+)$ ]]; then
-    local owner="${BASH_REMATCH[1]}" repo="${BASH_REMATCH[2]}" ref="${BASH_REMATCH[3]}"
-    echo "    curl failed; using gh api zipball for $owner/$repo@$ref" >&2
-    if gh api -H "Accept: application/octet-stream" \
-        "repos/${owner}/${repo}/zipball/${ref}" > "$dest.part"; then
-      mv "$dest.part" "$dest"
-      return 0
-    fi
-    rm -f "$dest.part"
-  fi
-  return 1
-}
-
-# Normalize relative path (strip leading ./)
-REL_PATH="${REL_PATH#./}"
-
-echo "::group::Fetching PR metadata"
-echo "Resolving PR metadata via gh: $PR_URL" >&2
-fetch_pr_metadata() {
-  local pr_url="$1"
-  BASE_NWO=$(echo "$pr_url" | awk -F/ '{print $4"/"$5}')
-  HEAD_NWO=$(gh pr view "$pr_url" --json headRepository -q '.headRepository.nameWithOwner')
-  BASE_SHA=$(gh pr view "$pr_url" --json baseRefOid -q .baseRefOid)
-  HEAD_SHA=$(gh pr view "$pr_url" --json headRefOid -q .headRefOid)
-  if [[ -z "$BASE_NWO" || -z "$BASE_SHA" || -z "$HEAD_SHA" ]]; then
-    echo "Error: failed to resolve PR details via gh" >&2
-    echo "  PR:        $pr_url" >&2
-    echo "  base nwo:  ${BASE_NWO:-<empty>}" >&2
-    echo "  base sha:  ${BASE_SHA:-<empty>}" >&2
-    echo "  head nwo:  ${HEAD_NWO:-<empty>} (may match base)" >&2
-    echo "  head sha:  ${HEAD_SHA:-<empty>}" >&2
-    echo "Hint:" >&2
-    echo "  - Commands used: 'gh pr view <url> --json baseRefOid,headRefOid,headRepository'" >&2
-    return 2
-  fi
-  if [[ -z "$HEAD_NWO" ]]; then
-    HEAD_NWO="$BASE_NWO"
-  fi
-  BASE_URL="https://raw.githubusercontent.com/${BASE_NWO}/${BASE_SHA}/${REL_PATH}"
-  HEAD_URL="https://raw.githubusercontent.com/${HEAD_NWO}/${HEAD_SHA}/${REL_PATH}"
-  echo "Base URL:   $BASE_URL" >&2
-  echo "Target URL: $HEAD_URL" >&2
-}
-if ! fetch_pr_metadata "$PR_URL"; then
-  echo "::error ::Error: failed to resolve PR details via gh" >&2
-  exit 2
-fi
-echo "::endgroup::"
 
 setup_thecrawl() {
   local src="$1"; shift || true
@@ -147,13 +89,76 @@ setup_thecrawl() {
   echo "$src"; return 0
 }
 
+
+fetch_pr_metadata() {
+  local pr_url="$1"
+  BASE_NWO=$(echo "$pr_url" | awk -F/ '{print $4"/"$5}')
+  HEAD_NWO=$(gh pr view "$pr_url" --json headRepository -q '.headRepository.nameWithOwner')
+  BASE_SHA=$(gh pr view "$pr_url" --json baseRefOid -q .baseRefOid)
+  HEAD_SHA=$(gh pr view "$pr_url" --json headRefOid -q .headRefOid)
+  if [[ -z "$BASE_NWO" || -z "$BASE_SHA" || -z "$HEAD_SHA" ]]; then
+    echo "Error: failed to resolve PR details via gh" >&2
+    echo "  PR:        $pr_url" >&2
+    echo "  base nwo:  ${BASE_NWO:-<empty>}" >&2
+    echo "  base sha:  ${BASE_SHA:-<empty>}" >&2
+    echo "  head nwo:  ${HEAD_NWO:-<empty>} (may match base)" >&2
+    echo "  head sha:  ${HEAD_SHA:-<empty>}" >&2
+    echo "Hint:" >&2
+    echo "  - Commands used: 'gh pr view <url> --json baseRefOid,headRefOid,headRepository'" >&2
+    return 2
+  fi
+  if [[ -z "$HEAD_NWO" ]]; then
+    HEAD_NWO="$BASE_NWO"
+  fi
+  BASE_URL="https://raw.githubusercontent.com/${BASE_NWO}/${BASE_SHA}/${REL_PATH}"
+  HEAD_URL="https://raw.githubusercontent.com/${HEAD_NWO}/${HEAD_SHA}/${REL_PATH}"
+  echo "Base URL:   $BASE_URL" >&2
+  echo "Target URL: $HEAD_URL" >&2
+}
+
+
+# Robust ZIP downloader with fallback to gh for GitHub zipball URLs
+download_zip() {
+  local url="$1" dest="$2"
+  mkdir -p "$(dirname "$dest")"
+  rm -f "$dest.part" "$dest"
+  # First try curl with retries
+  if curl -fSL --retry 3 --retry-all-errors --connect-timeout 15 --max-time 600 \
+      -o "$dest.part" "$url"; then
+    mv "$dest.part" "$dest"
+    return 0
+  fi
+  rm -f "$dest.part"
+  # Fallback for codeload.github.com/<owner>/<repo>/zip/<ref>
+  if [[ "$url" =~ ^https://codeload\.github\.com/([^/]+)/([^/]+)/zip/(.+)$ ]]; then
+    local owner="${BASH_REMATCH[1]}" repo="${BASH_REMATCH[2]}" ref="${BASH_REMATCH[3]}"
+    echo "    curl failed; using gh api zipball for $owner/$repo@$ref" >&2
+    if gh api -H "Accept: application/octet-stream" \
+        "repos/${owner}/${repo}/zipball/${ref}" > "$dest.part"; then
+      mv "$dest.part" "$dest"
+      return 0
+    fi
+    rm -f "$dest.part"
+  fi
+  return 1
+}
+
+
+echo "::group::Fetching PR metadata"
+echo "Resolving PR metadata via gh: $PR_URL" >&2
+if ! fetch_pr_metadata "$PR_URL"; then
+  echo "::error ::Error: failed to resolve PR details via gh" >&2
+  exit 2
+fi
+echo "::endgroup::"
+
+
 echo "::group::Getting thecrawl"
 CRAWLER_REPO=$(setup_thecrawl "$THECRAWL" --target "${GITHUB_WORKSPACE:-$PWD}/.thecrawl")
 if [[ ! -d "$CRAWLER_REPO" ]]; then
   echo "::error ::Error: could not find or clone thecrawl" >&2
   exit 2
 fi
-
 echo "Using thecrawl at: $CRAWLER_REPO" >&2
 echo "::endgroup::"
 
