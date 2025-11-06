@@ -73,6 +73,7 @@ download_zip() {
 # Normalize relative path (strip leading ./)
 REL_PATH="${REL_PATH#./}"
 
+echo "::group::Fetching PR metadata"
 echo "Resolving PR metadata via gh: $PR_URL" >&2
 
 # Derive base repo from PR URL (owner/repo)
@@ -104,6 +105,7 @@ HEAD_URL="https://raw.githubusercontent.com/${HEAD_NWO}/${HEAD_SHA}/${REL_PATH}"
 
 echo "Base URL:   $BASE_URL" >&2
 echo "Target URL: $HEAD_URL" >&2
+echo "::endgroup::"
 
 # Locate or clone thecrawl
 resolve_crawler_path() {
@@ -147,6 +149,7 @@ resolve_crawler_path() {
   return 2
 }
 
+echo "::group::Getting thecrawl"
 CRAWLER_REPO=$(resolve_crawler_path)
 if [[ ! -d "$CRAWLER_REPO" ]]; then
   echo "::error ::Error: could not find or clone thecrawl" >&2
@@ -154,6 +157,7 @@ if [[ ! -d "$CRAWLER_REPO" ]]; then
 fi
 
 echo "Using thecrawl at: $CRAWLER_REPO" >&2
+echo "::endgroup::"
 
 TMPDIR=$(mktemp -d)
 trap 'rm -rf "$TMPDIR"' EXIT
@@ -161,11 +165,13 @@ trap 'rm -rf "$TMPDIR"' EXIT
 BASE_REG="$TMPDIR/base_registry.json"
 HEAD_REG="$TMPDIR/head_registry.json"
 
-echo "Generating base registry…" >&2
+echo "::group::Generating base registry…" >&2
 (cd "$CRAWLER_REPO" && uv run -m scripts.generate_registry -c "$BASE_URL" -o "$BASE_REG")
+echo "::endgroup::"
 
-echo "Generating target registry…" >&2
+echo "::group::Generating target registry…" >&2
 (cd "$CRAWLER_REPO" && uv run -m scripts.generate_registry -c "$HEAD_URL" -o "$HEAD_REG")
+echo "::endgroup::"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Invoke Python diff to print results and collect changed+added package names
@@ -182,7 +188,7 @@ echo "Crawling ${#PKGS[@]} package(s) from target registry…" >&2
 failures=0
 for pkg in "${PKGS[@]}"; do
   [[ -z "$pkg" ]] && continue
-  echo "- Crawling: $pkg" >&2
+  echo "::group::Crawling: $pkg" >&2
   # Use workspace file output for robust parsing
   wsdir="$TMPDIR/workspaces"
   mkdir -p "$wsdir"
@@ -204,6 +210,7 @@ for pkg in "${PKGS[@]}"; do
     failures=$((failures+1))
     continue
   fi
+  echo "::endgroup::"
 
   i=0
   for rec in "${RELS[@]}"; do
@@ -222,6 +229,7 @@ for pkg in "${PKGS[@]}"; do
     mkdir -p "$workdir"
 
     zipfile="$workdir/pkg.zip"
+    echo "::group::Downloading $pkg-$disp_ver" >&2
     echo "  Downloading release $disp_ver: $url" >&2
     if ! download_zip "$url" "$zipfile"; then
       echo "::error  ::! Download failed for $pkg@$disp_ver" >&2
@@ -257,7 +265,9 @@ PY
       failures=$((failures+1))
       continue
     fi
+    echo "::endgroup::"
 
+    echo "::group::Reviewing $pkg-$safe_ver" >&2
     echo "  Reviewing with st_package_reviewer: $topdir" >&2
     if ! uv run st_package_reviewer "$topdir" | awk '
       /^Reporting [0-9]+ errors:/   { mode = "error";   next }
@@ -274,6 +284,7 @@ PY
       failures=$((failures+1))
       continue
     fi
+    echo "::endgroup::"
   done
 done
 
