@@ -75,82 +75,80 @@ REL_PATH="${REL_PATH#./}"
 
 echo "::group::Fetching PR metadata"
 echo "Resolving PR metadata via gh: $PR_URL" >&2
-
-# Derive base repo from PR URL (owner/repo)
-BASE_NWO=$(echo "$PR_URL" | awk -F/ '{print $4"/"$5}')
-# Head repo from PR data (may be same as base)
-HEAD_NWO=$(gh pr view "$PR_URL" --json headRepository -q '.headRepository.nameWithOwner')
-BASE_SHA=$(gh pr view "$PR_URL" --json baseRefOid -q .baseRefOid)
-HEAD_SHA=$(gh pr view "$PR_URL" --json headRefOid -q .headRefOid)
-
-if [[ -z "$BASE_NWO" || -z "$BASE_SHA" || -z "$HEAD_SHA" ]]; then
+fetch_pr_metadata() {
+  local pr_url="$1"
+  BASE_NWO=$(echo "$pr_url" | awk -F/ '{print $4"/"$5}')
+  HEAD_NWO=$(gh pr view "$pr_url" --json headRepository -q '.headRepository.nameWithOwner')
+  BASE_SHA=$(gh pr view "$pr_url" --json baseRefOid -q .baseRefOid)
+  HEAD_SHA=$(gh pr view "$pr_url" --json headRefOid -q .headRefOid)
+  if [[ -z "$BASE_NWO" || -z "$BASE_SHA" || -z "$HEAD_SHA" ]]; then
+    echo "Error: failed to resolve PR details via gh" >&2
+    echo "  PR:        $pr_url" >&2
+    echo "  base nwo:  ${BASE_NWO:-<empty>}" >&2
+    echo "  base sha:  ${BASE_SHA:-<empty>}" >&2
+    echo "  head nwo:  ${HEAD_NWO:-<empty>} (may match base)" >&2
+    echo "  head sha:  ${HEAD_SHA:-<empty>}" >&2
+    echo "Hint:" >&2
+    echo "  - Commands used: 'gh pr view <url> --json baseRefOid,headRefOid,headRepository'" >&2
+    return 2
+  fi
+  if [[ -z "$HEAD_NWO" ]]; then
+    HEAD_NWO="$BASE_NWO"
+  fi
+  BASE_URL="https://raw.githubusercontent.com/${BASE_NWO}/${BASE_SHA}/${REL_PATH}"
+  HEAD_URL="https://raw.githubusercontent.com/${HEAD_NWO}/${HEAD_SHA}/${REL_PATH}"
+  echo "Base URL:   $BASE_URL" >&2
+  echo "Target URL: $HEAD_URL" >&2
+}
+if ! fetch_pr_metadata "$PR_URL"; then
   echo "::error ::Error: failed to resolve PR details via gh" >&2
-  echo "  PR:        $PR_URL" >&2
-  echo "  base nwo:  ${BASE_NWO:-<empty>}" >&2
-  echo "  base sha:  ${BASE_SHA:-<empty>}" >&2
-  echo "  head nwo:  ${HEAD_NWO:-<empty>} (may match base)" >&2
-  echo "  head sha:  ${HEAD_SHA:-<empty>}" >&2
-  echo "Hint:" >&2
-  echo "  - Commands used: 'gh pr view <url> --json baseRefOid,headRefOid,headRepository'" >&2
   exit 2
 fi
-
-# Fallback: if HEAD_NWO is empty, assume same as base (same-repo PR)
-if [[ -z "$HEAD_NWO" ]]; then
-  HEAD_NWO="$BASE_NWO"
-fi
-
-BASE_URL="https://raw.githubusercontent.com/${BASE_NWO}/${BASE_SHA}/${REL_PATH}"
-HEAD_URL="https://raw.githubusercontent.com/${HEAD_NWO}/${HEAD_SHA}/${REL_PATH}"
-
-echo "Base URL:   $BASE_URL" >&2
-echo "Target URL: $HEAD_URL" >&2
 echo "::endgroup::"
 
-# Locate or clone thecrawl
-resolve_crawler_path() {
-  if [[ -n "$THECRAWL" ]]; then
-    if [[ "$THECRAWL" =~ ^https?:// || "$THECRAWL" =~ ^git@ ]]; then
-      local repo_path="${GITHUB_WORKSPACE:-$PWD}/.thecrawl"
-      # For HTTPS URLs, allow trailing @ref
-      local url_base="$THECRAWL"
-      local ref=""
-      if [[ "$url_base" =~ ^https?://.+@.+$ ]]; then
-        ref="${url_base##*@}"
-        url_base="${url_base%*@$ref}"
-      fi
+setup_thecrawl() {
+  local src="$1"; shift || true
+  [[ -z "$src" ]] && src="https://github.com/packagecontrol/thecrawl"
+  local target="${GITHUB_WORKSPACE:-$PWD}/.thecrawl"
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --target) target="$2"; shift 2;;
+      *) echo "Unknown setup_thecrawl arg: $1" >&2; return 2;;
+    esac
+  done
 
-      if [[ -d "$repo_path/.git" ]]; then
-        # Existing clone: update remote and optionally checkout ref
-        git -C "$repo_path" remote set-url origin "$url_base" >/dev/null 2>&1 || true
-        if [[ -n "$ref" ]]; then
-          echo "Checking out thecrawl ref '$ref' in $repo_path" >&2
-          git -C "$repo_path" fetch --depth 1 origin "$ref" >&2
-          git -C "$repo_path" checkout -q FETCH_HEAD >&2
-        fi
-        echo "$repo_path"; return
-      fi
-
-      if [[ -n "$ref" ]]; then
-        echo "Cloning thecrawl $url_base at ref '$ref' into $repo_path" >&2
-        git init -q "$repo_path" >&2
-        git -C "$repo_path" remote add origin "$url_base" >&2
-        git -C "$repo_path" fetch --depth 1 origin "$ref" >&2
-        git -C "$repo_path" checkout -q FETCH_HEAD >&2
-      else
-        echo "Cloning thecrawl from $url_base into $repo_path" >&2
-        git clone --depth 1 "$url_base" "$repo_path" >&2
-      fi
-      echo "$repo_path"; return
+  if [[ "$src" =~ ^https?:// || "$src" =~ ^git@ ]]; then
+    local url_base="$src" ref=""
+    if [[ "$url_base" =~ ^https?://.+@.+$ ]]; then
+      ref="${url_base##*@}"
+      url_base="${url_base%*@$ref}"
     fi
-    echo "$THECRAWL"; return
+    if [[ -d "$target/.git" ]]; then
+      git -C "$target" remote set-url origin "$url_base" >/dev/null 2>&1 || true
+      if [[ -n "$ref" ]]; then
+        echo "Checking out thecrawl ref '$ref' in $target" >&2
+        git -C "$target" fetch --depth 1 origin "$ref" >&2
+        git -C "$target" checkout -q FETCH_HEAD >&2
+      fi
+      echo "$target"; return 0
+    fi
+    if [[ -n "$ref" ]]; then
+      echo "Cloning thecrawl $url_base at ref '$ref' into $target" >&2
+      git init -q "$target" >&2
+      git -C "$target" remote add origin "$url_base" >&2
+      git -C "$target" fetch --depth 1 origin "$ref" >&2
+      git -C "$target" checkout -q FETCH_HEAD >&2
+    else
+      echo "Cloning thecrawl from $url_base into $target" >&2
+      git clone --depth 1 "$url_base" "$target" >&2
+    fi
+    echo "$target"; return 0
   fi
-  echo "Error: could not resolve thecrawl path" >&2
-  return 2
+  echo "$src"; return 0
 }
 
 echo "::group::Getting thecrawl"
-CRAWLER_REPO=$(resolve_crawler_path)
+CRAWLER_REPO=$(setup_thecrawl "$THECRAWL" --target "${GITHUB_WORKSPACE:-$PWD}/.thecrawl")
 if [[ ! -d "$CRAWLER_REPO" ]]; then
   echo "::error ::Error: could not find or clone thecrawl" >&2
   exit 2
