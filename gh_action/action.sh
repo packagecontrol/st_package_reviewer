@@ -193,6 +193,7 @@ for pkg in "${PKGS[@]}"; do
   wsdir="$TMPDIR/workspaces"
   mkdir -p "$wsdir"
   wsfile="$wsdir/${pkg}.json"
+  echo "Workspace file is $wsfile" >&2
   set +e
   (cd "$CRAWLER_REPO" && uv run -m scripts.crawl --registry "$HEAD_REG" --workspace "$wsfile" --name "$pkg" 2> >(cat >&2))
   STATUS=$?
@@ -256,13 +257,14 @@ for pkg in "${PKGS[@]}"; do
         continue
       fi
     else
+      echo "::notice ::unzip not available; falling back to use Python."
       python3 - "$zipfile" "$workdir" <<'PY'
 import sys, zipfile, os
 zf = zipfile.ZipFile(sys.argv[1])
 zf.extractall(sys.argv[2])
 PY
       if [[ $? -ne 0 ]]; then
-        echo "::error  ::! Unzip failed for $pkg@$disp_ver (python)" >&2
+        echo "::error  ::! Unzip failed for $pkg@$disp_ver (Python)" >&2
         failures=$((failures+1))
         continue
       fi
