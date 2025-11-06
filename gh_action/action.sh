@@ -220,7 +220,10 @@ for pkg in "${PKGS[@]}"; do
     if [[ "$ver" == "$url" ]]; then ver=""; fi
 
     i=$((i+1))
-    [[ -z "$ver" ]] && ver="r$i"
+    if [[ -z "$ver" ]]; then
+      echo "::warning ::Could not extract a version for $pkg release #$i (url: $url); using r$i" >&2
+      ver="r$i"
+    fi
     # sanitize for filesystem path
     safe_ver=$(printf "%s" "$ver" | tr -d '\r' | sed 's/[^A-Za-z0-9._-]/_/g')
     # display version (strip CR only)
