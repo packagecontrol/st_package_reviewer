@@ -106,9 +106,11 @@ setup_thecrawl() {
 fetch_pr_metadata() {
   local pr_url="$1"
   BASE_NWO=$(echo "$pr_url" | awk -F/ '{print $4"/"$5}')
-  HEAD_NWO=$(gh pr view "$pr_url" --json headRepository -q '.headRepository.nameWithOwner')
-  BASE_SHA=$(gh pr view "$pr_url" --json baseRefOid -q .baseRefOid)
-  HEAD_SHA=$(gh pr view "$pr_url" --json headRefOid -q .headRefOid)
+  IFS=: read -r HEAD_NWO BASE_SHA HEAD_SHA < <(
+    gh pr view "$pr_url" \
+      --json headRepository,baseRefOid,headRefOid \
+      -q '[.headRepository.nameWithOwner // "", .baseRefOid, .headRefOid] | join(":")'
+  )
   if [[ -z "$BASE_NWO" || -z "$BASE_SHA" || -z "$HEAD_SHA" ]]; then
     echo "Error: failed to resolve PR details via gh" >&2
     echo "  PR:        $pr_url" >&2
