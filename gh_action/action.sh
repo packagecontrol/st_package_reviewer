@@ -48,6 +48,19 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 
 
+# collect_lines_into ARRAY CMD...
+# - Strips trailing CRs and skips empty lines
+collect_lines_into() {
+  local __arr="$1"; shift || true
+  local __line
+  while IFS= read -r __line; do
+    # Trim trailing CR and skip empty lines
+    __line=${__line%$'\r'}
+    [ -n "$__line" ] || continue
+    eval "$__arr+=(\"\$__line\")"
+  done < <("$@")
+}
+
 setup_thecrawl() {
   local src="$1"; shift || true
   [[ -z "$src" ]] && src="https://github.com/packagecontrol/thecrawl"
@@ -178,9 +191,7 @@ echo "::endgroup::"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Invoke Python diff to print results and collect changed+added package names
-mapfile -t PKGS < <(python3 "$SCRIPT_DIR/diff_repository.py" --base-file "$BASE_REG" --target-file "$HEAD_REG" --print-changed-added \
-  | tr -d '\r' \
-  | sed '/^$/d')
+PKGS=(); collect_lines_into PKGS python3 "$SCRIPT_DIR/diff_repository.py" --base-file "$BASE_REG" --target-file "$HEAD_REG" --print-changed-added
 
 if [[ ${#PKGS[@]} -eq 0 ]]; then
   echo "::notice ::No changed or added packages to crawl." >&2
@@ -190,7 +201,6 @@ fi
 echo "Crawling ${#PKGS[@]} package(s) from target registry…" >&2
 failures=0
 for pkg in "${PKGS[@]}"; do
-  [[ -z "$pkg" ]] && continue
   echo "::group::Crawling: $pkg" >&2
   # Use workspace file output for robust parsing
   wsdir="$TMPDIR/workspaces"
@@ -208,7 +218,7 @@ for pkg in "${PKGS[@]}"; do
   fi
 
   # Extract release URLs (and versions) from workspace
-  mapfile -t RELS < <(python3 "$SCRIPT_DIR/parse_workspace.py" "$wsfile" "$pkg")
+  RELS=(); collect_lines_into RELS python3 "$SCRIPT_DIR/parse_workspace.py" "$wsfile" "$pkg"
   if [[ ${#RELS[@]} -eq 0 ]]; then
     echo "::error  ::! No releases found for $pkg" >&2
     failures=$((failures+1))
@@ -235,18 +245,16 @@ for pkg in "${PKGS[@]}"; do
       ver="r$i"
     fi
     # sanitize for filesystem path
-    safe_ver=$(printf "%s" "$ver" | tr -d '\r' | sed 's/[^A-Za-z0-9._-]/_/g')
-    # display version (strip CR only)
-    disp_ver=$(printf "%s" "$ver" | tr -d '\r')
+    safe_ver=$(printf '%s' "$ver" | sed 's/[^A-Za-z0-9._-]/_/g')
 
     workdir="$TMPDIR/review/$pkg/$safe_ver"
     mkdir -p "$workdir"
 
     zipfile="$workdir/pkg.zip"
-    echo "::group::Downloading $pkg-$disp_ver" >&2
-    echo "  Downloading release $disp_ver: $url" >&2
+    echo "::group::Downloading $pkg-$ver" >&2
+    echo "  Downloading release $ver: $url" >&2
     if ! download_zip "$url" "$zipfile"; then
-      echo "::error  ::! Download failed for $pkg@$disp_ver" >&2
+      echo "::error  ::! Download failed for $pkg@$ver" >&2
       failures=$((failures+1))
       continue
     fi
@@ -255,7 +263,7 @@ for pkg in "${PKGS[@]}"; do
     # Prefer unzip; fallback to Python zipfile
     if command -v unzip >/dev/null 2>&1; then
       if ! unzip -q -o "$zipfile" -d "$workdir"; then
-        echo "::error  ::! Unzip failed for $pkg@$disp_ver" >&2
+        echo "::error  ::! Unzip failed for $pkg@$ver" >&2
         failures=$((failures+1))
         continue
       fi
@@ -267,7 +275,7 @@ zf = zipfile.ZipFile(sys.argv[1])
 zf.extractall(sys.argv[2])
 PY
       if [[ $? -ne 0 ]]; then
-        echo "::error  ::! Unzip failed for $pkg@$disp_ver (Python)" >&2
+        echo "::error  ::! Unzip failed for $pkg@$ver (Python)" >&2
         failures=$((failures+1))
         continue
       fi
@@ -276,7 +284,7 @@ PY
     # Determine the top-level extracted directory
     topdir=$(find "$workdir" -mindepth 1 -maxdepth 1 -type d | head -n1)
     if [[ -z "$topdir" ]]; then
-      echo "::error  ::! Could not locate extracted folder for $pkg@$disp_ver" >&2
+      echo "::error  ::! Could not locate extracted folder for $pkg@$ver" >&2
       failures=$((failures+1))
       continue
     fi
@@ -295,7 +303,7 @@ PY
       { mode = ""; print }
     ';
     then
-      echo "  ! Review failed for $pkg@$disp_ver" >&2
+      echo "  ! Review failed for $pkg@$ver" >&2
       failures=$((failures+1))
       continue
     fi
