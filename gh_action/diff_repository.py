@@ -20,9 +20,9 @@ def main(argv=None) -> int:
     parser.add_argument('--base-file', required=True, help='Path to base registry JSON to diff')
     parser.add_argument('--target-file', required=True, help='Path to target registry JSON to diff')
     parser.add_argument(
-        '--print-changed-added',
+        '-z',
         action='store_true',
-        help='Print newline-separated names of changed and added packages to stdout')
+        help='Separate entries with NUL (\\0) instead of newlines')
 
     args = parser.parse_args(argv)
 
@@ -57,9 +57,9 @@ def main(argv=None) -> int:
         f"added {_format_oxford_list(added)}."
     )
 
-    if args.print_changed_added:
+    if args.z:
         for name in changed + added:
-            print(name)
+            print(name, end="\0")
 
     return 0
 

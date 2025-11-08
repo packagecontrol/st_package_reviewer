@@ -17,6 +17,11 @@ def main(argv=None) -> int:
     )
     p.add_argument("workspace", help="Path to workspace JSON")
     p.add_argument("name", help="Package name to extract")
+    p.add_argument(
+        "-z",
+        action="store_true",
+        help="Separate entries with NUL (\\0) instead of newlines",
+    )
     args = p.parse_args(argv)
 
     try:
@@ -38,7 +43,10 @@ def main(argv=None) -> int:
         if not url:
             continue
         ver = rel.get("version", "")
-        print(f"{url}\t{ver}")
+        if args.z:
+            print(f"{url}\t{ver}", end="\0")
+        else:
+            print(f"{url}\t{ver}")
     return 0
 
 

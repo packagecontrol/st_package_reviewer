@@ -48,19 +48,6 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 
 
-# collect_lines_into ARRAY CMD...
-# - Strips trailing CRs and skips empty lines
-collect_lines_into() {
-  local __arr="$1"; shift || true
-  local __line
-  while IFS= read -r __line; do
-    # Trim trailing CR and skip empty lines
-    __line=${__line%$'\r'}
-    [ -n "$__line" ] || continue
-    eval "$__arr+=(\"\$__line\")"
-  done < <("$@")
-}
-
 setup_thecrawl() {
   local src="$1"; shift || true
   [[ -z "$src" ]] && src="https://github.com/packagecontrol/thecrawl"
@@ -193,7 +180,10 @@ echo "::endgroup::"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Invoke Python diff to print results and collect changed+added package names
-PKGS=(); collect_lines_into PKGS python3 "$SCRIPT_DIR/diff_repository.py" --base-file "$BASE_REG" --target-file "$HEAD_REG" --print-changed-added
+PKGS=()
+while IFS= read -r -d '' __pkg; do
+  PKGS+=("$__pkg")
+done < <(python3 "$SCRIPT_DIR/diff_repository.py" --base-file "$BASE_REG" --target-file "$HEAD_REG" -z)
 
 if [[ ${#PKGS[@]} -eq 0 ]]; then
   echo "::notice ::No changed or added packages to crawl." >&2
@@ -220,7 +210,10 @@ for pkg in "${PKGS[@]}"; do
   fi
 
   # Extract release URLs (and versions) from workspace
-  RELS=(); collect_lines_into RELS python3 "$SCRIPT_DIR/parse_workspace.py" "$wsfile" "$pkg"
+  RELS=()
+  while IFS= read -r -d '' __rec; do
+    RELS+=("$__rec")
+  done < <(python3 "$SCRIPT_DIR/parse_workspace.py" "$wsfile" "$pkg" -z)
   if [[ ${#RELS[@]} -eq 0 ]]; then
     echo "::error  ::! No releases found for $pkg" >&2
     failures=$((failures+1))
