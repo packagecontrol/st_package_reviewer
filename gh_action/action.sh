@@ -287,7 +287,8 @@ PY
 
     echo "::group::Reviewing $pkg-$safe_ver" >&2
     echo "  Reviewing with st_package_reviewer: $topdir" >&2
-    if ! uv run st_package_reviewer "$topdir" | awk '
+    ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+    if ! (cd "$ROOT_DIR" && uv run st_package_reviewer "$topdir") | awk '
       /^Reporting [0-9]+ errors:/   { mode = "error";   next }
       /^Reporting [0-9]+ warnings:/ { mode = "warning"; next }
       /^- / && mode {
