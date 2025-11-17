@@ -47,6 +47,14 @@ if ! command -v uv >/dev/null 2>&1; then
   echo "Error: uv is required" >&2; exit 2
 fi
 
+# When this action is downloaded by GitHub, it does not include the .git folder.
+# Our project uses hatch-vcs/setuptools-scm for dynamic versioning, which needs VCS metadata.
+# Provide a fallback version so the build backend can proceed when running under Actions.
+# Project-specific env var recommended by setuptools-scm
+export SETUPTOOLS_SCM_PRETEND_VERSION_FOR_ST_PACKAGE_REVIEWER=${SETUPTOOLS_SCM_PRETEND_VERSION_FOR_ST_PACKAGE_REVIEWER:-0.0.0}
+# Generic fallback for environments that ignore the project-specific variant
+export SETUPTOOLS_SCM_PRETEND_VERSION=${SETUPTOOLS_SCM_PRETEND_VERSION:-$SETUPTOOLS_SCM_PRETEND_VERSION_FOR_ST_PACKAGE_REVIEWER}
+
 
 setup_thecrawl() {
   local src="$1"; shift || true
