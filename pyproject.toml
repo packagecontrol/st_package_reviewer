@@ -25,7 +25,7 @@ dependencies = [
   "pyperclip>=1.7,<2",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
   "pytest>=8,<9",
   "pytest-cov>=5,<6",

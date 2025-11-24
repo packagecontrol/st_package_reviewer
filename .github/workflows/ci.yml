@@ -23,7 +23,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
 
       - name: Install project + dev deps
-        run: uv sync --extra dev
+        run: uv sync --group dev
 
       - name: Run flake8
         run: uv run flake8 -v .
@@ -43,7 +43,7 @@ jobs:
         uses: astral-sh/setup-uv@v4
 
       - name: Install project + dev deps
-        run: uv sync --extra dev
+        run: uv sync --group dev
 
       - name: Run tests
         run: uv run pytest --cov st_package_reviewer --cov tests --cov-report term-missing

@@ -66,7 +66,7 @@ Interactive mode:
 
 This repo uses [uv](https://github.com/astral-sh/uv) and targets Python 3.13.
 
-- Setup environment: `uv sync --extra dev`
+- Setup environment: `uv sync --group dev`
 - Run the CLI: `uv run st_package_reviewer --version`
 - Run tests: `uv run pytest`
 - Lint: `uv run flake8 .`
