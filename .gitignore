@@ -16,4 +16,3 @@ dist/
 *.pyc
 *.sublime-workspace
 st_package_reviewer/_version.py
-uv.lock
