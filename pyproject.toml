@@ -41,6 +41,14 @@ st_package_reviewer = "st_package_reviewer.__main__:main"
 Homepage = "https://github.com/packagecontrol/st_package_reviewer"
 Repository = "https://github.com/packagecontrol/st_package_reviewer"
 
+[tool.hatch.build.targets.sdist]
+exclude = [
+  ".gitignore",
+  "uv.lock",
+  "/.github",
+  "*.sublime-project",
+]
+
 [tool.hatch.version]
 source = "vcs"
 
