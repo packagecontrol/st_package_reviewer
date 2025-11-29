@@ -17,7 +17,6 @@ class CheckMessages(FileChecker):
         elif folder_exists and not file_exists:
             self.fail("`messages` folder exists, but `messages.json` does not")
             return
-        assert file_exists
 
         with self.file_context(msg_path):
             with msg_path.open() as f:
@@ -30,7 +29,7 @@ class CheckMessages(FileChecker):
             for key, rel_path in data.items():
                 if key == "install":
                     pass
-                elif SemVer.valid(key):
+                elif SemVer.valid(key.removeprefix('v')):
                     pass
                 else:
                     self.fail("Key {!r} is not 'install' or a valid semantic version"
