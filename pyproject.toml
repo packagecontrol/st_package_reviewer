@@ -56,3 +56,11 @@ source = "vcs"
 [tool.hatch.build.hooks.vcs]
 version-file = "st_package_reviewer/_version.py"
 tag-pattern = "v{version}"
+
+[tool.pytest.ini_options]
+norecursedirs = [
+  ".*",
+  "__pycache__",
+  "build",
+  "dist",
+]
