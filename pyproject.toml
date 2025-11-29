@@ -43,9 +43,8 @@ Repository = "https://github.com/packagecontrol/st_package_reviewer"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
-  ".gitignore",
-  "uv.lock",
-  "/.github",
+  ".*",
+  "*.lock",
   "*.sublime-project",
 ]
 
