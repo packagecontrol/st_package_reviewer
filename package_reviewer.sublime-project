@@ -16,7 +16,7 @@
     "build_systems": [
         {
             "name": "Run tests",
-            "shell_cmd": "tox",
+            "shell_cmd": "uv run pytest",
             "working_dir": "${project_path}",
             "file_regex": "^(.*?):(\\d+):(\\d+): (.*)"
         }

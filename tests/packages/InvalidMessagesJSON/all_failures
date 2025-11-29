@@ -1,4 +1,0 @@
-- The package does not define any file that interfaces with Sublime Text
-- unable to load `messages.json`
-    File: messages.json
-    Exception: Expecting property name enclosed in double quotes: line 3 column 1 (char 40)

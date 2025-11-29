@@ -1,6 +1,11 @@
 """Review packages for Sublime Text."""
 
-__version__ = "0.4.0-dev"
+try:
+    # Prefer the generated version file written by hatch-vcs during build/sync
+    from ._version import __version__  # type: ignore
+except Exception:
+    # Fallback for editable/dev scenarios before build hook runs
+    __version__ = "0+unknown"
 
 _debug = False
 

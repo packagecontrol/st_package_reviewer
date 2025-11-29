@@ -8,72 +8,50 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  POETRY_VERSION: 1.8.4
-
 jobs:
   flake8:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
-      - name: Install poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: ${{ env.POETRY_VERSION }}
-          virtualenvs-create: false
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
 
-      # Skip cache because we have few deps
-      - name: Install flake8
-        run: poetry install -v --no-root --only lint
+      - name: Install project + dev deps
+        run: uv sync --group dev
 
       - name: Run flake8
-        run: poetry run flake8 -v .
+        run: uv run flake8 -v .
 
   tests:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
-    name: pytest (Python ${{ matrix.python-version }})
+    name: pytest (Python 3.13)
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.13'
 
-      - name: Install poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: ${{ env.POETRY_VERSION }}
-          virtualenvs-create: true
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
 
-      - name: Cache poetry virtualenv
-        uses: actions/cache@v2
-        id: cache
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: poetry-tests-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install test dependencies
-        run: poetry install -v --only main --only test
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Install project + dev deps
+        run: uv sync --group dev
 
       - name: Run tests
-        run: poetry run py.test --cov st_package_reviewer --cov tests --cov-report term-missing
+        run: uv run pytest --cov st_package_reviewer --cov tests --cov-report term-missing
 
       - name: Coveralls
         continue-on-error: true
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
-          pip install coveralls
-          coveralls
+          uv pip install coveralls
+          uv run coveralls
