@@ -75,7 +75,7 @@ This repo uses [uv](https://github.com/astral-sh/uv) and targets Python 3.13.
 
 
 [Sublime Text]: https://sublimetext.com/
-[Package Control]: https://packagecontrol.io/
+[Package Control]: https://packages.sublimetext.io/
 [wiki]: https://github.com/packagecontrol/st_package_reviewer/wiki
 
 ## Development Workflow
